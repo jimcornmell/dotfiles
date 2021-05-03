@@ -54,15 +54,15 @@ theming. So in the list that follows I've setup zenburn to be the theme used.
 # Tools
 <!-- {{{1 -->
 
-Name                 | Description
--------------------- | -------------------------------------
-Kitty                | Command terminal, very powerful and configurable.
-Terminal Multiplexer | I used tmux for a while but when I moved over to kitty this became redundant.
-Ranger               | File browser.
-Bat                  | Cat with wings!
-prettyping           | Ping but nicer!
-ncdu                 | Disc usage, but nice!
-Exa                  | ls on steroids
+Name                                                   | Description
+------------------------------------------------------ | -------------------------------------
+[Kitty](https://sw.kovidgoyal.net/kitty/)              | Command terminal, very powerful and configurable.
+Terminal Multiplexer                                   | I used [tmux](https://github.com/tmux/tmux) for a while but when I moved over to kitty this became redundant.
+[Ranger](https://github.com/ranger/ranger)             | File browser.
+[Bat](https://github.com/sharkdp/bat)                  | Cat with wings!
+[prettyping](https://github.com/denilsonsa/prettyping) | Ping but nicer!
+[ncdu](https://dev.yorhel.nl/ncdu)                     | Disc usage, but nice!
+[Exa](https://the.exa.website)                         | ls on steroids
 
 <!-- }}}1 -->
 
