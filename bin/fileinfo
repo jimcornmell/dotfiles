@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+# Display information about a file.
+# e.g: fileinfo FileName
+
+. ~/bin/globals.sh
+
+if [ $# != 1 ]
+then
+    echo Display file information.
+    echo Usage:    fileinfo FileName
+    exit 1
+fi
+
+fullName=$@
+fName=`basename $fullName`
+dName=`dirname $fullName`
+rName=`realpath $fullName`
+fExt=${fName##*.}
+
+outnl $red "Image identify"
+identify $fullName
+echo
+
+outnl $red "Exif tool"
+exiftool "$rName"
+echo
+
+outnl $red "File stat"
+stat $fullName
+echo
+
+outnl $red "Word count:"
+wcL=`wc -l $fullName | cut -d" " -f1`
+wcW=`wc -w $fullName | cut -d" " -f1`
+wcM=`wc -m $fullName | cut -d" " -f1`
+wcC=`wc -c $fullName | cut -d" " -f1`
+wcMax=`wc -L $fullName | cut -d" " -f1`
+outnonl $green "Lines#"
+outnonl $yellow $wcL
+outnonl $green " (Max line length="
+outnonl $yellow $wcMax
+outnonl $green "chars) Words#"
+outnonl $yellow $wcW
+outnonl $green " Chars#"
+outnonl $yellow $wcM
+outnonl $green " Bytes#"
+outnl $yellow $wcC
+echo
+
+outnl $red "File info:"
+file -b $fullName
+echo
+
+outnl $red "$fName"
+outnonl $green "Path:      "
+outnl $yellow "$fullName"
+outnonl $green "Full path: "
+outnl $yellow "$rName"
+outnonl $green "Folder:    "
+outnl $yellow "$dName"
+outnonl $green "File name: "
+outnl $yellow "$fName"
+outnonl $green "Extension: "
+outnl $yellow "$fExt"
+echo
+
+# outwait $red "Any key to close"
+

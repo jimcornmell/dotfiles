@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Get a column from a csv, assuming first line is the column names.
+# Use as:   csvGetCol "Column name" filenameofcsv
+
+if [ $# == 1 ]
+then
+  fileName=$1
+  echo Column names are:
+  head -1 "$fileName" | sed 's/\t/\n/g' | sed 's/,/\n/g'
+  exit 0
+fi
+
+if [ $# != 2 ]
+then
+  echo Usage:  $0 ColumnName FileName
+  echo or to find column names:
+  echo Usage:  $0 FileName
+  exit 1
+fi
+
+colName=$1
+fileName=$2
+
+colNum=$(head -1 "$fileName" | sed 's/\t/\n/g' | sed 's/,/\n/g' | grep -n "^$colName$" | awk -F ":" '{print $1}')
+cat "$fileName" | sed 's/\t/,/g' | cut -d, -f$colNum | tail -n +2
+

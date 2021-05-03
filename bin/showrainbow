@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Show lots of colours.
+
+for i in `seq 1 256`;
+do
+    num=$(printf "%03d" $i)
+
+    echo -n $num=
+    tput setab $i
+    echo -n " "
+
+    for j in `seq 9 16`;
+    do
+        tput setaf $j
+        echo -n "x"
+    done
+
+    echo -n " "
+    tput sgr0
+    echo -n " "
+
+    remainder=$(( $i % 8 ))
+
+    if [ $remainder -eq 0 ]; then
+        echo
+    fi
+done
+
+echo
+tput sgr0

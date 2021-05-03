@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+# Installer for useful tools.
+# When they are installed should not try to install
+# a second time but should upgrade if applicable.
+
+if grep -q Microsoft /proc/version; then
+    if [ ! -e ~/bin/System32 ]; then
+        echo Adding link to system32
+        ln -s /mnt/c/Windows/System32 ~/bin/System32
+    else
+        echo Already linked to system32.
+    fi
+fi
+
+if [[ -d ~/.fzf ]]; then
+    echo Fzf already installed.
+    git pull
+else
+    figlet fzf
+    echo Fzf missing: performing installation.
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
+fi
+
+figlet prettyping
+cd ~/bin
+if [[ -f ~/bin/prettyping ]]; then
+    rm prettyping
+fi
+wget https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping
+chmod 755 prettyping
+cd ~
+
+figlet jira
+cd ~/bin
+if [[ -f ~/bin/jira ]]; then
+    rm jira
+fi
+wget https://github.com/Netflix-Skunkworks/go-jira/releases/download/v1.0.20/jira-linux-amd64 -O jira
+chmod 755 jira
+cd ~
+
+figlet exa
+cd ~/bin
+if [[ -f ~/bin/exa ]]; then
+    rm exa
+    rm exa.zip
+fi
+wget -c https://github.com/ogham/exa/releases/download/v0.8.0/exa-linux-x86_64-0.8.0.zip -O exa.zip
+unzip exa.zip
+mv exa-* exa
+chmod 755 exa
+rm exa.zip
+cd ~
+
+figlet fancy-diff
+cd ~/bin
+if [[ -f ~/bin/diff-so-fancy ]]; then
+    rm diff-so-fancy
+fi
+wget https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
+chmod 755 diff-so-fancy
+cd ~
+
+if [[ -d /opt/flyway ]]; then
+    echo Flyway already installed
+else
+    cd /opt
+    figlet flyway
+    wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.2.4/flyway-commandline-5.2.4-linux-x64.tar.gz | sudo tar xvz
+    sudo ln -s flyway-5.2.4 flyway
+    cd ~
+fi
+
+jpath=$(which java)
+
+if [[ -e "$jpath" ]]; then
+    echo Java already installed
+else
+    figlet Java Corretto
+    wget https://d3pxv6yz143wms.cloudfront.net/8.212.04.2/java-1.8.0-amazon-corretto-jdk_8.212.04-2_amd64.deb -O java.deb
+    sudo dpkg --install java.deb
+    rm java.deb
+fi
+
+figlet Autojump
+cd ~
+git clone git://github.com/wting/autojump.git
+cd autojump
+./install.py
+cd ..
+rm -rf autojump
+
+if [[ -f ~/bin/cht ]]; then
+    echo cheat.sh already installed
+else
+    figlet cheat.sh
+    curl https://cht.sh/:cht.sh > ~/bin/cht
+    chmod +x ~/bin/cht
+fi
+

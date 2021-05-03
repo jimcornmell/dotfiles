@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+# Install a shed load of useful stuff.
+
+# Here is a brief description of most of the commands, when installed use
+# "man command" or "command --help" for more information on each.
+
+echo apt upgrade and update
+sudo apt upgrade
+sudo apt update
+
+sudo apt install -y \
+    apt-transport-https \
+    atool \
+    ca-certificates \
+    elinks \
+    highlight \
+    java-common \
+    libcaca0 \
+    lolcat \
+    lsb-release \
+    lynx \
+    man-db \
+    mediainfo \
+    pinfo \
+    poppler-utils \
+    software-properties-common \
+    sysvbanner \
+    w3m
+
+sudo apt install -y autojump            # Jump to files in history
+sudo apt install -y awscli              # AWS command line.
+sudo apt install -y bat                 # Cat with wings! https://github.com/sharkdp/bat
+sudo apt install -y bc                  # Command line calculator, arbitrary precision.
+sudo apt install -y cloc                # Count lines of code.
+sudo apt install -y cmatrix             # Matrix film list raining text, because why not!
+sudo apt install -y curl                # Curl!
+sudo apt install -y dos2unix            # convert DOS line endings to Unix line endings.
+sudo apt install -y figlet              # Prints bug text in a terminal.
+sudo apt install -y file                # Useful information about files.
+sudo apt install -y gcc                 # Gnu C compiler.
+sudo apt install -y gem                 # Ruby gems package manager.
+sudo apt install -y git                 # GIT!
+sudo apt install -y graphviz            # dot image tools.
+sudo apt install -y groovy              # Groovy!
+sudo apt install -y htop                # Processes currently running.
+sudo apt install -y imagemagick         # Powerful image manipulation on the command line.
+sudo apt install -y jq                  # Json formatter.
+sudo apt install -y most                # cat files.
+sudo apt install -y multicat            # Multi cat....
+sudo apt install -y multitail           # Multi tail....
+sudo apt install -y multitee            # Multi tee....
+sudo apt install -y multiwatch          # Multi watch....
+sudo apt install -y mysql-client        # MySQL command line.
+sudo apt install -y ncdu                # Disc usage.
+sudo apt install -y perl                # Perl.
+sudo apt install -y pv                  # Progress bar for the command line.
+sudo apt install -y python              # Python stuff.
+sudo apt install -y python3             # Python stuff.
+sudo apt install -y python3-pip         # Python stuff.
+sudo apt install -y python-pygments     # Python stuff.
+sudo apt install -y ranger              # File explorer for the command line.
+sudo apt install -y ruby                # Ruby stuff.
+sudo apt install -y ruby-dev            # Ruby stuff.
+sudo apt install -y tmux                # Terminal Multiplexer
+sudo apt install -y tree                # File trees, use exa --tree though.
+sudo apt install -y unzip               # Unzip.
+sudo apt install -y vim                 # Probably the best editor in the world!
+sudo apt install -y wget                # wget!
+sudo apt install -y zip                 # Zipper.
+sudo apt install -y zsh                 # Zshell.
+

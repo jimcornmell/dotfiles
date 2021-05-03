@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+# Show HTTP Status codes and a link to the wiki page.
+
+. ~/bin/globals.sh
+
+setboxwidth 90
+setboxfg $grey
+boxtop
+setboxtextfg $yellow
+boxtext "HTML Status Codes"
+setboxtextfg $cyan
+boxtext "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
+# openf "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
+boxmid
+
+setforeground $grey
+outchar $pV
+setforeground $green
+outnonl $magenta " 1xx "
+outnonl $cyan "informational"
+outnonl   $green " – the request was received, continuing process                       "
+
+setforeground $grey
+outchar $pV
+echo
+outchar $pV
+setforeground $green
+
+outnonl $magenta " 2xx "
+outnonl $cyan "successful   "
+outnonl   $green " - request was successfully received, understood, and accepted        "
+
+setforeground $grey
+outchar $pV
+echo
+outchar $pV
+setforeground $green
+
+outnonl $magenta " 3xx "
+outnonl $cyan "redirection  "
+outnonl   $green " – further action needs to be taken in order to complete the request  "
+
+setforeground $grey
+outchar $pV
+echo
+outchar $pV
+setforeground $green
+
+outnonl $magenta " 4xx "
+outnonl $cyan "client error "
+outnonl   $green " – the request contains bad syntax or cannot be fulfilled             "
+
+setforeground $grey
+outchar $pV
+echo
+outchar $pV
+setforeground $green
+
+outnonl $magenta " 5xx "
+outnonl $cyan "server error "
+outnonl   $green " – the server failed to fulfil an apparently valid request            "
+
+setforeground $grey
+outchar $pV
+echo
+boxbottom
+setforeground $green
+

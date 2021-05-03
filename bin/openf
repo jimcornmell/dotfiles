@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [ $# != 1 ]
+then
+    echo Opens the file in the system app for that type of file.
+    echo Usage:    openf FileName
+    exit 1
+fi
+
+nohup kde-open5 "$1" > /dev/null 2>&1 &

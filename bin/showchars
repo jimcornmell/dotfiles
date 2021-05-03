@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+# Output list of chars, useful for finding useful chars for nice output.
+
+tput clear
+
+i=0
+while [ $i -lt 1024 ]; do
+    let "j=i"
+    k=0
+
+    while [ $k -lt 13 ]
+    do
+        hex=$(([##16]j))
+        printf "%s:%b\t" $hex "\u$hex"
+        let "j=j+1024"
+        let "k++"
+    done
+
+    echo
+    let "i++"
+done

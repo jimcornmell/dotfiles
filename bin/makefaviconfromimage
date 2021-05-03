@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+if [ $# != 1 ]
+then
+    echo Uses imagemagick to convert an image into a favicon.
+    echo Usage:    makefaviconfromimage FileName
+    exit 1
+fi
+
+convert "$1" -background white \
+          \( -clone 0 -resize 16x16 -extent 16x16 \) \
+          \( -clone 0 -resize 32x32 -extent 32x32 \) \
+          \( -clone 0 -resize 48x48 -extent 48x48 \) \
+          \( -clone 0 -resize 64x64 -extent 64x64 \) \
+          -delete 0 -alpha off -colors 256 favicon_white.ico
+
+convert "$1" -background grey \
+          \( -clone 0 -resize 16x16 -extent 16x16 \) \
+          \( -clone 0 -resize 32x32 -extent 32x32 \) \
+          \( -clone 0 -resize 48x48 -extent 48x48 \) \
+          \( -clone 0 -resize 64x64 -extent 64x64 \) \
+          -delete 0 -alpha off -colors 256 favicon_grey.ico
+
+convert "$1" -background black \
+          \( -clone 0 -resize 16x16 -extent 16x16 \) \
+          \( -clone 0 -resize 32x32 -extent 32x32 \) \
+          \( -clone 0 -resize 48x48 -extent 48x48 \) \
+          \( -clone 0 -resize 64x64 -extent 64x64 \) \
+          -delete 0 -alpha off -colors 256 favicon_black.ico
+
+convert "$1" -define icon:auto-resize=64,48,32,16 favicon.ico
+

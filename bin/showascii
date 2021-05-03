@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# Show an ascii table for quick reference.
+
+. ~/bin/globals.sh
+
+setboxwidth 73
+boxtop
+boxtext "ASCII table"
+boxtext ""
+printf $pV
+outnonl $blue "     Decimal    "
+outnonl $white "   Hex    "
+outnonl $green "   Number    "
+outnonl $yellow "   Uppercase    "
+outnonl $magenta "   Lowercase    "
+printf $pV
+echo
+boxmidspecial "R--------D--------D--------D--------D--------D--------D--------D--------L"
+
+printf $pV
+
+for ((i=32;i<127;i++));
+do
+    num=$(printf "%03d" $i)
+    hex=$(printf "%02X" $i)
+
+    outnonl $blue "$num "
+    outnonl $white "$hex "
+
+
+    if [ $i -gt 64 ] && [ $i -lt 91 ]
+    then
+        setforeground $yellow
+    else
+        if [ $i -gt 96 ] && [ $i -lt 123 ]
+        then
+            setforeground $magenta
+        else
+            if [ $i -gt 47 ] && [ $i -lt 58 ]
+            then
+                setforeground $green
+            else
+                setforeground $cyan
+            fi
+        fi
+    fi
+
+    printf "\\$(printf %03o "$i")";
+    resetcolour
+
+    remainder=$(( ( $i + 1 ) % 8 ))
+
+    if [ $remainder -eq 0 ]; then
+        printf $pV
+        echo
+        printf $pV
+    else
+        printf $pV
+    fi
+done
+
+echo -n "        "
+printf $pV
+echo
+boxmidspecial "j--------U--------U--------U--------U--------U--------U--------U--------k"
+

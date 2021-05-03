@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Draw a box with the text supplied on the command line:
+# E.g: box Hello World!
+
+. ~/bin/globals.sh
+
+outbox "$*"
