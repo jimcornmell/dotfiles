@@ -50,7 +50,6 @@ export PATH=$PATH:/usr/bin
 export PATH=$PATH:/usr/sbin
 export PATH=$PATH:/snap/bin
 export PATH=$PATH:/opt/docker
-export PATH=$PATH:$JAVA_HOME/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:/usr/local/go/bin
@@ -90,7 +89,49 @@ ZSH_DISABLE_COMPFIX=true
 
 # }}}
 
-# Powerline10k {{{
+# Powerline10k Prompt {{{
+# Switch user prompt.
+USER_PROMPT="left_only"
+
+p() {
+    case "$USER_PROMPT" in
+    "full")
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(user host dir_writable dir vcs)
+        POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$'\uE0B0'
+        POWERLEVEL9K_DISABLE_RPROMPT=false
+        USER_PROMPT="left_only"
+        ;;
+    "left_only")
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(user host dir_writable dir vcs)
+        POWERLEVEL9K_DISABLE_RPROMPT=true
+        USER_PROMPT="minimal"
+        ;;
+    "minimal")
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(status)
+        POWERLEVEL9K_DISABLE_RPROMPT=true
+        USER_PROMPT="simple"
+        ;;
+    "simple")
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir)
+        POWERLEVEL9K_DISABLE_RPROMPT=true
+        USER_PROMPT="traditional"
+        ;;
+    "traditional")
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(custom_traditional_prompt)
+        POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=''
+        POWERLEVEL9K_DISABLE_RPROMPT=true
+        USER_PROMPT="full"
+        ;;
+    esac
+}
+
+vcs() {
+    if [ "$POWERLEVEL9K_LEFT_PROMPT_ELEMENTS" = "user host dir_writable dir" ]; then
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(user host dir_writable dir vcs)
+    else
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(user host dir_writable dir)
+    fi
+}
 
 # Toggle display of the right prompt.
 rprompt() {
@@ -283,16 +324,19 @@ ZSH_HIGHLIGHT_STYLES[assig]=fg=cyan,bold
 # Pretty ping: http://denilson.sa.nom.br/prettyping/
 # ncdu: https://dev.yorhel.nl/ncdu
 
-alias a="alias"
-alias banner="figlet"
+alias "?"="jobs"
+alias "\-"="cd -"
+alias a=alias
+alias banner=figlet
 alias clip="xclip -selection c"
-alias cls="clear"
+alias cls=clear
 alias d="dirs -v | head -15"
 alias delcolour="sed 's/\x1b\[[0-9;]*m//g'"
 alias dol="(/usr/bin/dolphin . > /dev/null 2>&1 &)"
 alias du=ncdu
-alias e="echo"
+alias e=echo
 alias egrep='egrep --color=auto'
+alias f=find
 alias fgrep='fgrep --color=auto'
 alias gcal="gcalcli calm"
 alias gd="git difftool --no-symlinks --dir-diff HEAD --ignore-space-at-eol"
@@ -303,13 +347,14 @@ alias ip="ip -c -4 addr"
 alias juplab="(jupyter lab > /dev/null 2>&1 &)"
 alias kd="kitty +kitten diff"
 alias ki="kitty +kitten icat"
-alias k="kill"
+alias k=kill
 alias kon="(/usr/bin/konsole . > /dev/null 2>&1 &)"
 alias la='ls -a'
 alias lla='ls -la'
 alias llat='ls -la -snew'
 alias llrt='ls -la -snew'
-alias l='ls'
+alias l=ls
+alias lo=locate
 alias llt='ls -l -snew'
 alias ls='exa -F --git --group-directories-first --icons'
 alias mk="man -k"
@@ -318,13 +363,14 @@ alias pkill="nocorrect pkill"
 alias pping=prettyping
 alias soffice="/opt/libreoffice/program/soffice"
 alias s=sudo
+alias sup="sudo updatedb"
 alias sttyreset="stty 502:9:bf:107:0:f:0:0:4:7f:3:15:16:1:1c:12:11:13:1a:1a:0:17"
 alias tocsv="/opt/libreoffice6.2/program/soffice --headless --convert-to csv "
 alias top=$HOME/.local/bin/bpytop
 alias tree="tree -A"
 alias t=tail
 alias u=uniq
-alias vd="vimdiff"
+alias vd=vimdiff
 alias vg="nvim .gitignore"
 alias vi=nvim
 alias vk="nvim ~/.config/kitty/kitty.conf"
@@ -332,15 +378,12 @@ alias v=nvim
 alias vr="(grip & ; openf http://localhost:6419 &) > /dev/null 2>&1; nvim README.md"
 alias vv="nvim -S ~/.config/nvim/sessions/config_nvim.vim"
 alias vz="nvim ~/.zshrc"
+alias w=where
 alias watch="watch -c"
 alias watchPorts="sudo watch ss -tulpn"
 alias winx="(/usr/bin/dolphin . > /dev/null 2>&1 &)"
 alias w=where
 alias x=xargs
-
-alias "\-"="cd -"
-alias "?"="jobs"
-
 # }}}
 
 # Completion {{{
