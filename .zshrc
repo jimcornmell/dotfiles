@@ -11,7 +11,7 @@ unsetopt BG_NICE
 
 export TERM="xterm-256color"
 export MNT=/mnt
-export JAVA_HOME=/usr/lib/jvm/java-16-amazon-corretto
+export JAVA_HOME=/opt/java
 export JQ_COLORS="1;33:4;33:0;33:0;33:0;32:1;37:1;37"
 export EDITOR='nvim'
 export DISPLAY=:0.0
@@ -41,6 +41,7 @@ export PATH=$PATH:~/bin
 export PATH=$PATH:$HOME/.local/kitty.app/bin
 export PATH=$PATH:/opt/nvim/bin
 export PATH=$PATH:/bin
+export PATH=$PATH:$JAVA_HOME/bin
 export PATH=$PATH:/sbin
 export PATH=$PATH:/opt/node/bin
 export PATH=$PATH:/opt/gradle/bin
