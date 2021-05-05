@@ -30,8 +30,6 @@ umask 002
 # https://github.com/trapd00r/LS_COLORS
 [ -f ~/.dircolors ] && eval $(dircolors -b $HOME/.dircolors)
 
-# Fuzzy finder.
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # }}}
 
 # Path {{{
@@ -470,7 +468,10 @@ then
 fi
 # }}}
 
+# THIS MUST BE NEAR THE END OF THE FILE FOR FZF TO WORK!!! {{{1
+# Fuzzy finder.
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!! {{{1
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-#!/bin/bash
