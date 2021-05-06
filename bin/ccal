@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+. ~/bin/globals.sh
+
+year=$(date +"%Y")
+dwq=$(date +"Day number: %j        Week number: %V        Quarter: %q")
+datestr=$(date +"%A %B %e %Y (%F) %R:%S")
+
+boxtop
+setboxtextfg $yellow
+boxtext $year
+boxmid
+setboxtextfg $cyan
+lineNum=0
+lines=$(unbuffer ncal -y -w)
+IFS=''
+counter=0
+
+while read -r line; do
+    if [[ "$line" =~ ^\ \ \  ]]; then
+        if [ $((counter%2)) -eq 0 ]; then
+            # Week number.
+            setboxtextfg $cyan
+        else
+            # Month name.
+            line=$(echo "$line" | cut -c2-70)
+            setboxtextfg $yellow
+        fi
+
+        ((counter++))
+    else
+        if [[ "$line" =~ ^S ]]; then
+            # Weekend.
+            setboxtextfg $grey
+        else
+            # Weekday.
+            setboxtextfg $white
+        fi
+    fi
+
+    if [ $lineNum -gt 0 ]; then
+        boxtextline "    $line"
+        echo
+    fi
+
+    ((lineNum++))
+done <<< "$lines"
+
+setboxtextfg $cyan
+boxmid
+boxtext "$datestr"
+boxtext "$dwq"
+boxbottom
+
