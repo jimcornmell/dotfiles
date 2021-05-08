@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-export JAVA_HOME="/opt/java"
+export JAVA_HOME="/opt/java-11"
 export JAR="/opt/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/plugins/org.eclipse.equinox.launcher_*.jar"
 export JDTLS_CONFIG="/opt/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_linux"
-export WORKSPACE="$HOME/eclipse-workspace"
+export WORKSPACE="/home/jim/workspace"
 
 $JAVA_HOME/bin/java \
   -Declipse.application=org.eclipse.jdt.ls.core.id1 \
