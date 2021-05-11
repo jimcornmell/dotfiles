@@ -1,22 +1,22 @@
-#!/usr/bin/env bash
-
-export JAVA_HOME="/opt/java-11"
-export JAR="/opt/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/plugins/org.eclipse.equinox.launcher_*.jar"
-export JDTLS_CONFIG="/opt/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_linux"
-export WORKSPACE="/home/jim/workspace"
-
-$JAVA_HOME/bin/java \
-  -Declipse.application=org.eclipse.jdt.ls.core.id1 \
-  -Dosgi.bundles.defaultStartLevel=4 \
-  -Declipse.product=org.eclipse.jdt.ls.core.product \
-  -Dlog.protocol=true \
-  -Dlog.level=ALL \
-  -Xms1g \
-  -Xmx2G \
-  -jar           $(echo "$JAR") \
-  -configuration "$JDTLS_CONFIG" \
-  -data          "$WORKSPACE" \
-  --add-modules=ALL-SYSTEM \
-  --add-opens java.base/java.util=ALL-UNNAMED \
-  --add-opens java.base/java.lang=ALL-UNNAMED
-
+# #!/usr/bin/env bash
+# 
+# export JAVA_HOME="/opt/java-11"
+# export JAR="/opt/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/plugins/org.eclipse.equinox.launcher_*.jar"
+# export JDTLS_CONFIG="/opt/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/config_linux"
+# export WORKSPACE="/home/jim/workspace"
+# 
+# $JAVA_HOME/bin/java \
+#   -Declipse.application=org.eclipse.jdt.ls.core.id1 \
+#   -Dosgi.bundles.defaultStartLevel=4 \
+#   -Declipse.product=org.eclipse.jdt.ls.core.product \
+#   -Dlog.protocol=true \
+#   -Dlog.level=ALL \
+#   -Xms1g \
+#   -Xmx2G \
+#   -jar           $(echo "$JAR") \
+#   -configuration "$JDTLS_CONFIG" \
+#   -data          "$WORKSPACE" \
+#   --add-modules=ALL-SYSTEM \
+#   --add-opens java.base/java.util=ALL-UNNAMED \
+#   --add-opens java.base/java.lang=ALL-UNNAMED
+# 
