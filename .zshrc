@@ -241,18 +241,18 @@ gtag () {
 
 # Functions {{{
 
-# Codi
-# Usage: codi [filetype] [filename]
+# Start bc as Codi a python scratchpad.
 bc() {
-    local syntax="${1:-python}"
-    shift
     nvim -c \
         "let g:startify_disable_at_vimenter = 1 |\
         set bt=nofile ls=0 noru nonu nornu |\
         hi ColorColumn ctermbg=NONE |\
         hi VertSplit ctermbg=NONE |\
         hi NonText ctermfg=0 |\
-        Codi $syntax" "$@"
+        let g:codi#virtual_text_prefix = ' ❯❯❯ ' |\
+        let g:codi#rightsplit=1 |\
+        let g:codi#rightalign=1 |\
+        Codi python" "Scratchpad.py"
 }
 
 # Highlight whole line.
