@@ -255,6 +255,17 @@ bc() {
         Codi python" "Scratchpad.py"
 }
 
+vd() {
+    nvim -d $*
+}
+
+vdi() {
+    nvim -d -c "set diffopt+=iblank |\
+                set diffopt+=icase |\
+                set diffopt+=iwhiteall |\
+                set diffopt+=iwhiteeol" $*
+}
+
 # Highlight whole line.
 hil() {
     awk -vNRM='\033[0;0m' -vRED='\033[1;31m' -vYELLOW='\033[1;33m' '/ ERROR /{printf("%s%s%s\n", RED, $0, NRM)}/ INFO /{printf("%s%s%s\n", YELLOW, $0, NRM)}!/ ERROR | INFO /';
@@ -338,7 +349,7 @@ alias egrep='egrep --color=auto'
 alias f=find
 alias fgrep='fgrep --color=auto'
 alias gcal="gcalcli calm"
-alias gd="git difftool --no-symlinks --dir-diff HEAD --ignore-space-at-eol"
+alias gd="git difftool"
 alias g="grep --color=auto -i"
 alias grep='grep --color=auto'
 alias hibernate='systemctl suspend'
@@ -369,7 +380,6 @@ alias top=$HOME/.local/bin/bpytop
 alias tree="tree -A"
 alias t=tail
 alias u=uniq
-alias vd="nvim -d"
 alias vg="nvim .gitignore"
 alias vi=nvim
 alias vk="nvim ~/.config/kitty/kitty.conf"
