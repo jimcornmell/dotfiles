@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+. ~/bin/globals.sh
+
+if [ $# != 2 ]
+then
+    echo Usage: $0 Command FileName
+    exit 1
+fi
+
+function MakeUrl() {
+    url=$1
+    url=$(echo $url | sed "s/{PROJECT}/$PROJECT/g")
+    url=$(echo $url | sed "s/{BRANCH}/$BRANCH/g")
+    url=$(echo $url | sed "s/{USER}/$USER/g")
+    echo $url
+}
+
+ARTURL=http://artifactory.costcutter.local:8082/artifactory/DML/{PROJECT}
+TICKETURL=https://costcutter.jira.com/browse/{BRANCH}
+DOCSURL=https://costcutter.jira.com/wiki/search?text={PROJECT}
+CIURL=https://jenkins-live.cloud.costcutter.com/view/Bootham/view/Dev/job/{PROJECT}-{BRANCH}-10-build/
+LINTURL=http://sonarci.costcutter.local/dashboard/index?id=costcutter%3A{PROJECT}%3A{BRANCH}
+TESTREPORTSURL=target/site/serenity/index.html
+
+GITHUBTICKETURL=https://github.com/{USER}/{PROJECT}/issues/{BRANCH}
+GITREPOURL=https://github.com/{USER}/{PROJECT}
+BBREPOURL=https://bitbucket.org/{USER}/{PROJECT}/branch/{BRANCH}
+
+CMD=${1}
+FULLPATH=${2}
+cd $FULLPATH
+
+BASE=$(git rev-parse --show-toplevel)
+PROJECT=$(basename $BASE)
+BRANCH=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+REPO=$(git config --get remote.origin.url)
+USER=$(echo $REPO | sed -e 's/.*://' -e 's/\/.*//')
+ISGITHUB=false
+
+if [[ "$REPO" == *"github"* ]]
+then
+    ISGITHUB=true
+fi
+
+case $CMD in
+    Repo)
+        # jr
+        if [[ $REPO == http* ]]
+        then
+            URL=$(echo $REPO | sed 's/.git$//')
+        else
+            if $ISGITHUB
+            then
+                URL=$(MakeUrl $GITREPOURL)
+            else
+                URL=$(MakeUrl $BBREPOURL)
+            fi
+        fi
+        ;;
+    Artifact)
+        # ja
+        URL=$(MakeUrl $ARTURL)
+        ;;
+    Ticket)
+        # jt
+        if [ "$BRANCH" != "main" ] && [ "$BRANCH" != "master" ]
+        then
+            if $ISGITHUB
+            then
+                URL=$(MakeUrl $GITHUBTICKETURL)
+            else
+                URL=$(MakeUrl $TICKETURL)
+            fi
+        fi
+        ;;
+    Notes)
+        # jn
+        URL=$(MakeUrl $DOCSURL)
+        ;;
+    Ci)
+        # jc
+        URL=$(MakeUrl $CIURL)
+        ;;
+    Lint)
+        # jl
+        URL=$(MakeUrl $LINTURL)
+        ;;
+    TestReports)
+        # je
+        URL=$(MakeUrl $TESTREPORTSURL)
+        ;;
+    *)
+        ;;
+esac
+
+runCmd $URL
+
+# echo cmd $CMD
+# echo path $FULLPATH
+# echo is git $ISGITHUB
+# echo base $BASE
+# echo proj name$PROJECT
+# echo repo $REPO
+# echo branch  $BRANCH
+# echo url   $URL
+
