@@ -17,73 +17,73 @@ cat <<EOF>$outputFile
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-body{
--moz-column-width: 450px;
--webkit-column-width: 450px;
-column-width: 450px;
-background: #3f3f3f;
-color: #ffffff;
-font: 9pt sans-serif;
-}
-div.clean {
-}
-div.border {
-border: 2px solid #fa5522;
-}
-div.inner {
-break-inside: avoid;
-border-radius: 5px;
-min-width: 450px;
-max-width: 450px;
-margin: 5px;
-}
-th{
-color: White;
-font: bold 1.2em monospace;
-text-align: right;
-vertical-align: top;
-min-width: 150px;
-max-width: 150px;
-}
-td{
-color: #fff;
-vertical-align: top;
-font: normal 1em sans-serif;
-min-width: 250px;
-max-width: 250px;
-}
-h1{
-color: #fa5522;
-padding: 0;
-margin: 0;
-}
-kbd {
-color: #ff6;
-border-radius: 4px;
-padding: 1px;
-border: 1px solid gray;
-background: black;
-font-family: monospace;
-}
-kbd.cmd {
-color: white;
-border-radius: 4px;
-padding: 1px;
-border: 1px solid black;
-background: gray;
-font-family: monospace;
-}
-a {
-color: Cyan;
-}
-@media print {
-body{ background: #fff; color: #000; font-size: 5pt; }
-dt{ color: #000; text-decoration: none; }
-dd{ color: #000; font: normal 1.0em sans-serif; padding-left: 1em; }
-h1,h2,h3,h4{ color: #000; } span.font1 { color: #000; }
-span.font2 { color: #000; }
-}
-@page { margin: 0.25in; }
+    body{
+        -moz-column-width: 450px;
+        -webkit-column-width: 450px;
+        column-width: 450px;
+        background: #3f3f3f;
+        color: #ffffff;
+        font: 9pt sans-serif;
+    }
+    div.clean {
+    }
+    div.border {
+        border: 2px solid #fa5522;
+    }
+    div.inner {
+        break-inside: avoid;
+        border-radius: 5px;
+        min-width: 450px;
+        max-width: 450px;
+        margin: 5px;
+    }
+    th{
+        color: White;
+        font: bold 1.2em monospace;
+        text-align: right;
+        vertical-align: top;
+        min-width: 150px;
+        max-width: 150px;
+    }
+    td{
+        color: #fff;
+        vertical-align: top;
+        font: normal 1em sans-serif;
+        min-width: 250px;
+        max-width: 250px;
+    }
+    h1{
+        color: #fa5522;
+        padding: 0;
+        margin: 0;
+    }
+    kbd {
+        color: #ff6;
+        border-radius: 4px;
+        padding: 1px;
+        border: 1px solid gray;
+        background: black;
+        font-family: monospace;
+    }
+    kbd.cmd {
+        color: white;
+        border-radius: 4px;
+        padding: 1px;
+        border: 1px solid black;
+        background: gray;
+        font-family: monospace;
+    }
+    a {
+        color: Cyan;
+    }
+    @media print {
+        body{ background: #fff; color: #000; font-size: 5pt; }
+        dt{ color: #000; text-decoration: none; }
+        dd{ color: #000; font: normal 1.0em sans-serif; padding-left: 1em; }
+        h1,h2,h3,h4{ color: #000; } span.font1 { color: #000; }
+        span.font2 { color: #000; }
+    }
+    @page { margin: 0.25in; }
 </style>
 </head>
 
@@ -97,51 +97,45 @@ seenfirst=false
 while read -r line
 do
     line=$(echo $line | sed "s/\\\|/¬/g")
+    line=$(echo $line | sed 's/:heavy_check_mark:/<img src="utils\/media\/tick.png"\/>/g')
 
-    if [[ $line = \|* ]]
+    if [[ $line != \|* ]]
     then
+        line=$(echo $line | sed 's/¬/|/g')
+        line=$(echo $line | sed 's/`\([^`]*\)`/<kbd class="cmd">\1<\/kbd>/g')
+        echo $line >> $outputFile
+    else
         IFS='|'
         read -a linebits <<< $line
         IFS='£'
+        first=${linebits[1]}
+        second=${linebits[2]}
+        first=$(echo $first | sed 's/`\([^`]*\)`/<kbd class="cmd">\1<\/kbd>/g')
+        first=$(echo $first | sed 's/¬/|/g')
+        second=$(echo $second | sed 's/`\([^`]*\)`/<kbd class="cmd">\1<\/kbd>/g')
+        second=$(echo $second | sed 's/__\([^_]*\)__/<strong>\1<\/strong>/g')
+        second=$(echo $second | sed 's/\[\([^]]*\)\](\([^)]*\))/<a target="_new" href="\2">\1<\/a>/g')
+        second=$(echo $second | sed 's/¬/|/g')
 
-        if [[ $line = \|__* ]]
+        if [[ $line != \|__* ]]
         then
+            if $seenfirst
+            then
+                echo "<tr><th>${first}</th><td>${second}</td></tr>" >> $outputFile
+            fi
+        else
             if $seenfirst
             then
                 echo "</tbody></table>" >> $outputFile
             fi
 
             seenfirst=true
-            header=$(echo ${linebits[1]} | tr -d '_')
-            headerid=$(echo ${header} | tr [:upper:] [:lower:] | sed 's/[^a-z0-9]//g')
-            second=${linebits[2]}
-            second=$(echo $second | sed 's/`\([^`]*\)`/<kbd class="cmd">\1<\/kbd>/g')
-            second=$(echo $second | sed 's/\[\([^]]*\)\](\([^)]*\))/<a target="_new" href="\2">\1<\/a>/g')
-
+            first=$(echo $first | tr -d '_')
+            headerid=$(echo ${first} | tr [:upper:] [:lower:] | sed 's/[^a-z0-9]//g')
             echo "</div><div class=\"inner border\" id=\"${headerid}\">" >> $outputFile
-            echo "<h1>${header} ${second}</h1>" >> $outputFile
+            echo "<h1>${first} ${second}</h1>" >> $outputFile
             echo "<table><tbody>" >> $outputFile
-        else
-            if $seenfirst
-            then
-                first=${linebits[1]}
-                second=${linebits[2]}
-
-                first=$(echo $first | sed 's/`\([^`]*\)`/<kbd class="cmd">\1<\/kbd>/g')
-                first=$(echo $first | sed 's/¬/|/g')
-                second=$(echo $second | sed 's/`\([^`]*\)`/<kbd class="cmd">\1<\/kbd>/g')
-                second=$(echo $second | sed 's/:heavy_check_mark:/<img src="utils\/media\/tick.png"\/>/g')
-                second=$(echo $second | sed 's/__\([^_]*\)__/<strong>\1<\/strong>/g')
-                second=$(echo $second | sed 's/\[\([^]]*\)\](\([^)]*\))/<a target="_new" href="\2">\1<\/a>/g')
-                second=$(echo $second | sed 's/¬/|/g')
-                echo "<tr><th>${first}</th><td>${second}</td></tr>" >> $outputFile
-            fi
         fi
-    else
-        line=$(echo $line | sed 's/¬/|/g')
-        line=$(echo $line | sed 's/:heavy_check_mark:/<img src="utils\/media\/tick.png"\/>/g')
-        line=$(echo $line | sed 's/`\([^`]*\)`/<kbd class="cmd">\1<\/kbd>/g')
-        echo $line >> $outputFile
     fi
 done < $inputFile
 
