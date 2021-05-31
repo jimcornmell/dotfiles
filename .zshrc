@@ -243,16 +243,21 @@ gtag () {
 
 # Start bc as Codi a python scratchpad.
 bc() {
+    local syntax="${1:-python}"
+    shift
     nvim -c \
         "let g:startify_disable_at_vimenter = 1 |\
-        set bt=nofile ls=0 noru nonu nornu |\
-        hi ColorColumn ctermbg=NONE |\
-        hi VertSplit ctermbg=NONE |\
-        hi NonText ctermfg=0 |\
-        let g:codi#virtual_text_prefix = ' ❯❯❯ ' |\
-        let g:codi#rightsplit=1 |\
-        let g:codi#rightalign=1 |\
-        Codi python" "Scratchpad.py"
+        set bt=nofile ls=0 noru nonu nolist |\
+        hi CodiVirtualText guibg=NONE guifg=LightGreen |\
+        let g:codi#rightsplit=0 |\
+        let g:codi#virtual_text_prefix = '         ➭ ' |\
+        Codi $syntax" "Scratchpad.py"
+        # let g:codi#rightalign=1
+        # let g:codi#width=40
+        # hi ColorColumn guibg=NONE
+        # hi VertSplit guibg=NONE
+        # hi NonText guifg=0
+        # let g:codi#virtual_text_prefix = ' ❯❯ ►⮚⮞➤⯈➭ '
 }
 
 vd() {
