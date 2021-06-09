@@ -9,11 +9,11 @@
 ostype=$(uname -r)
 unsetopt BG_NICE
 
-export TERM="xterm-256color"
+# export EDITOR='neovide'
+export EDITOR='nvim'
 export MNT=/mnt
 export JAVA_HOME=/opt/java
 export JQ_COLORS="1;33:4;33:0;33:0;33:0;32:1;37:1;37"
-export EDITOR='nvim'
 export DISPLAY=:0.0
 export BC_ENV_ARGS=~/.bc
 
@@ -240,6 +240,14 @@ gtag () {
 # }}}
 
 # Functions {{{
+editFile() {
+    if [ "$EDITOR" = "neovide" ]
+    then
+        (nohup neovide $* &) > /dev/null 2>&1
+    else
+        nvim $*
+    fi
+}
 
 # Start bc as Codi a python scratchpad.
 bc() {
@@ -261,11 +269,11 @@ bc() {
 }
 
 vd() {
-    nvim -d $*
+    editFile -d $*
 }
 
 vdi() {
-    nvim -d -c "set diffopt+=iblank |\
+    editFile -d -c "set diffopt+=iblank |\
                 set diffopt+=icase |\
                 set diffopt+=iwhiteall |\
                 set diffopt+=iwhiteeol" $*
@@ -385,13 +393,13 @@ alias top=$HOME/.local/bin/bpytop
 alias tree="tree -A"
 alias t=tail
 alias u=uniq
-alias vg="nvim .gitignore"
-alias vi=nvim
-alias vk="nvim ~/.config/kitty/kitty.conf"
-alias v=nvim
-alias vr="(grip & ; openf http://localhost:6419 &) > /dev/null 2>&1; nvim README.md"
-alias vv="nvim -S ~/.config/nvim/sessions/config_nvim.vim"
-alias vz="nvim ~/.zshrc"
+alias vg="editFile .gitignore"
+alias vi=editFile
+alias vk="editFile ~/.config/kitty/kitty.conf"
+alias v=editFile
+alias vr="(grip & ; openf http://localhost:6419 &) > /dev/null 2>&1; editFile README.md"
+alias vv="editFile -S ~/.config/nvim/sessions/config_nvim.vim"
+alias vz="editFile ~/.zshrc"
 alias w=where
 alias watch="watch -c"
 alias watchPorts="sudo watch ss -tulpn"

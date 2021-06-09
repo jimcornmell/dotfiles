@@ -26,9 +26,15 @@ export boldwhite=15
 export coltext=2
 export colbranch=5
 export colproject=1
-
 export foreground=$green
 export background=$black
+
+COLOUR_TERMINAL=$(tput colors 2> /dev/null)
+if [ $? -eq 0 ] || [ $COLOUR_TERMINAL -gt 8 ]; then
+    COLOUR_SUPPORTED=true
+else
+    COLOUR_SUPPORTED=false
+fi
 
 function runCmd {
     xdg-open $1 > /dev/null 2>&1
@@ -36,14 +42,14 @@ function runCmd {
 
 function setforeground() {
     export foreground=$1
-    if [ "$TERM" = "xterm-256color" ]; then
+    if [ "$COLOUR_SUPPORTED" ]; then
         tput setaf $1
     fi
 }
 
 function setbackground() {
     export background=$1
-    if [ "$TERM" = "xterm-256color" ]; then
+    if [ "$COLOUR_SUPPORTED" ]; then
         # Some terminals honour black to mean black, other treat it as
         # terminal background colour, we always want the latter.
         if [ $1 -eq $black ]
@@ -64,7 +70,7 @@ function setcolour() {
 function resetcolour() {
     export foreground=$green
     export background=$black
-    if [ "$TERM" = "xterm-256color" ]; then
+    if [ "$COLOUR_SUPPORTED" ]; then
         tput sgr0
     fi
 }
@@ -497,7 +503,7 @@ function outerrorbox() {
 function resetcolour() {
     export foreground=$green
     export background=$black
-    if [ "$TERM" = "xterm-256color" ]; then
+    if [ "$COLOUR_SUPPORTED" ]; then
         tput sgr0
     fi
 }
