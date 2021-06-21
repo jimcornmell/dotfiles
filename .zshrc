@@ -36,6 +36,7 @@ umask 002
 # PATH Start with nothing!
 unset PATH
 export PATH=$PATH:~/bin
+export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/.local/kitty.app/bin
 export PATH=$PATH:/opt/nvim/bin
 export PATH=$PATH:/bin
@@ -349,6 +350,7 @@ ZSH_HIGHLIGHT_STYLES[assig]=fg=cyan,bold
 
 alias "?"="jobs"
 alias "\-"="cd -"
+
 alias a=alias
 alias banner=figlet
 alias clip="xclip -selection c"
@@ -361,6 +363,7 @@ alias e=echo
 alias egrep='egrep --color=auto'
 alias f=find
 alias fgrep='fgrep --color=auto'
+alias gaf="git add -f"
 alias gcal="gcalcli calm"
 alias gd="git difftool"
 alias g="grep --color=auto -i"
@@ -373,41 +376,44 @@ alias ki="kitty +kitten icat"
 alias k=kill
 alias kon="(/usr/bin/konsole . > /dev/null 2>&1 &)"
 alias la='exa -F --git --icons -a --group-directories-first'
-alias ll='exa -F --git --icons -l -h --group-directories-first'
 alias lla='exa -F --git --icons -la -h --group-directories-first'
-alias llat='exa -F --git --icons -la -snew -h'
-alias llrt='exa -F --git --icons -l -r -snew -h'
 alias llart='exa -F --git --icons -la -r -snew -h'
+alias llat='exa -F --git --icons -la -snew -h'
+alias ll='exa -F --git --icons -l -h --group-directories-first'
+alias llrt='exa -F --git --icons -l -r -snew -h'
 alias l=ls
-alias lo=locate
 alias llt='exa -F --git --icons -l -snew -h'
+alias lo=locate
 alias ls='exa -F --git --group-directories-first --icons -h'
 alias mk="man -k"
 alias o=openf
 alias pkill="nocorrect pkill"
 alias pping=prettyping
+alias rmdir='rmdirtrash'
+alias rm='rmtrash'
 alias soffice="/opt/libreoffice/program/soffice"
 alias s=sudo
-alias sup="sudo updatedb"
 alias sttyreset="stty 502:9:bf:107:0:f:0:0:4:7f:3:15:16:1:1c:12:11:13:1a:1a:0:17"
+alias sudo='sudo '
+alias sup="sudo updatedb"
 alias tocsv="/opt/libreoffice6.2/program/soffice --headless --convert-to csv "
 alias top=$HOME/.local/bin/bpytop
 alias tree="exa -T -l -h --icons --git -F -L 3"
 alias t=tail
 alias u=uniq
+alias v=editFile
 alias vg="editFile .gitignore"
 alias vi=editFile
 alias vk="editFile ~/.config/kitty/kitty.conf"
-alias v=editFile
 alias vr="(grip & ; openf http://localhost:6419 &) > /dev/null 2>&1; editFile README.md"
 alias vv="editFile -S ~/.config/nvim/sessions/config_nvim.vim"
 alias vz="editFile ~/.zshrc"
-alias w=where
-alias watch="watch -c"
 alias watchPorts="sudo watch ss -tulpn"
+alias watch="watch -c"
 alias winx="(/usr/bin/dolphin . > /dev/null 2>&1 &)"
 alias w=where
 alias x=xargs
+
 # }}}
 
 # Completion {{{
