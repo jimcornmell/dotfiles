@@ -1,0 +1,2 @@
+set gvimpath=/home/jim/.local/kitty.app/bin/kitty
+set gvimargs=/opt/nvim/bin/nvim +{line} {file}
