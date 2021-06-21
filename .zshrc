@@ -36,7 +36,6 @@ umask 002
 # PATH Start with nothing!
 unset PATH
 export PATH=$PATH:~/bin
-export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/.local/kitty.app/bin
 export PATH=$PATH:/opt/nvim/bin
 export PATH=$PATH:/bin
