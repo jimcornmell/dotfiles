@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+. ~/bin/globals.sh
+
+if [ $# == 0 ]
+then
+    outnl $green "Open wikipeadia article for arguments supplied"
+    outnonl $green "Usage: "
+    outnl $yellow "   wiki Carl Sagan"
+    exit 1
+fi
+
+ARGS=$(echo $* | sed -e "s/ /+/g")
+openf https://en.wikipedia.org/?search=$ARGS
+

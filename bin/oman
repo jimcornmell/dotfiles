@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+. ~/bin/globals.sh
+
+if [ $# == 0 ]
+then
+    outnl $green "Open online manual page for argument"
+    outnonl $green "Usage: "
+    outnl $yellow "   oman sed"
+    exit 1
+fi
+
+ARGS=$(echo $* | sed -e "s/ /+/g")
+openf https://man.cx/$ARGS
+

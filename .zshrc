@@ -364,7 +364,7 @@ alias f=find
 alias fgrep='fgrep --color=auto'
 alias gaf="git add -f"
 alias gcal="gcalcli calm"
-alias gd="git difftool"
+alias gd="git diff"
 alias g="grep --color=auto -i"
 alias grep='grep --color=auto'
 alias hibernate='systemctl suspend'
@@ -373,6 +373,9 @@ alias juplab="(jupyter lab > /dev/null 2>&1 &)"
 alias kd="kitty +kitten diff"
 alias ki="kitty +kitten icat"
 alias k=kill
+alias markGreen='kitty @ create-marker --self itext 3'
+alias markAmber='kitty @ create-marker --self itext 2'
+alias markRed='kitty @ create-marker --self itext 1'
 alias kon="(/usr/bin/konsole . > /dev/null 2>&1 &)"
 alias la='exa -F --git --icons -a --group-directories-first'
 alias lla='exa -F --git --icons -la -h --group-directories-first'
@@ -388,6 +391,7 @@ alias mk="man -k"
 alias o=openf
 alias pkill="nocorrect pkill"
 alias pping=prettyping
+alias ping=gping
 alias rmdir='rmdirtrash'
 alias rm='rmtrash'
 alias soffice="/opt/libreoffice/program/soffice"

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+. ~/bin/globals.sh
+
+if [ $# == 0 ]
+then
+    outnl $green "Open online search with arguments"
+    outnonl $green "Usage: "
+    outnl $yellow "   search Carl Sagan"
+    exit 1
+fi
+
+ARGS=$(echo $* | sed -e "s/ /+/g")
+openf https://www.google.co.uk/search?q=$ARGS
+
