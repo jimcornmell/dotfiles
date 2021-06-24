@@ -279,6 +279,21 @@ vdi() {
                 set diffopt+=iwhiteeol" $*
 }
 
+javaRun() {
+    echo Compiling $1.java
+    javac $1.java
+
+    if [ $? -eq 0 ]; then
+        echo Running $1
+        echo -- ------------------------------- --
+        java $1
+        echo -- ------------------------------- --
+    else
+        echo Compilation error.
+    fi
+    echo Done
+}
+
 # Highlight whole line.
 hil() {
     awk -vNRM='\033[0;0m' -vRED='\033[1;31m' -vYELLOW='\033[1;33m' '/ ERROR /{printf("%s%s%s\n", RED, $0, NRM)}/ INFO /{printf("%s%s%s\n", YELLOW, $0, NRM)}!/ ERROR | INFO /';
