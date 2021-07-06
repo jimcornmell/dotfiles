@@ -148,7 +148,7 @@ function setboxmargin() {
 }
 
 function setboxstyle() {
-    style=$1 # Style one of, HASH, BLANK, SINGLE, DOUBLE, MIXEDDH, MIXEDSH
+    style=$1 # Style one of, HASH, BLANK, SINGLE, DOUBLE, MIXEDDH, MIXEDSH, ROUND
     boxstyle=$style
 
     case $style in
@@ -177,6 +177,19 @@ function setboxstyle() {
         pDH=" "
         pUH=" "
         pVH=" "
+        ;;
+    ROUND)
+        pH="\u2500"     # ─ SINGLE HORIZONTAL
+        pV="\u2502"     # │ SINGLE VERTICAL
+        pTL="\u256D"    # ╭ SINGLE DOWN AND RIGHT
+        pTR="\u256E"    # ╮ SINGLE DOWN AND LEFT
+        pBL="\u2570"    # ╰ SINGLE UP AND RIGHT
+        pBR="\u256F"    # ╯ SINGLE UP AND LEFT
+        pVL="\u2524"    # ┤ SINGLE VERTICAL AND LEFT
+        pVR="\u251C"    # ├ SINGLE VERTICAL AND RIGHT
+        pDH="\u252C"    # ┬ SINGLE DOWN AND HORIZONTAL
+        pUH="\u2534"    # ┴ SINGLE UP AND HORIZONTAL
+        pVH="\u253C"    # ┼ SINGLE VERTICAL AND HORIZONTAL
         ;;
     SINGLE)
         pH="\u2500"     # ─ SINGLE HORIZONTAL
@@ -240,7 +253,7 @@ function setboxdefaults() {
     boxtextbg=$black
     boxwidth=80
     boxmargin=0
-    setboxstyle SINGLE
+    setboxstyle ROUND
     setboxtextjustify CENTRE
 }
 

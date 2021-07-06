@@ -38,10 +38,10 @@ unset PATH
 export PATH=$PATH:~/bin
 export PATH=$PATH:$HOME/.local/kitty.app/bin
 export PATH=$PATH:/opt/nvim/bin
+export PATH=$PATH:/opt/node/bin
 export PATH=$PATH:/bin
 export PATH=$PATH:$JAVA_HOME/bin
 export PATH=$PATH:/sbin
-export PATH=$PATH:/opt/node/bin
 export PATH=$PATH:/opt/gradle/bin
 export PATH=$PATH:/opt/groovy/bin
 export PATH=$PATH:/usr/local/bin

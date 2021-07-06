@@ -121,18 +121,28 @@ handle_extension() {
                 local pygmentize_format='terminal'
                 local highlight_format='ansi'
             fi
+            env COLORTERM=8bit bat \
+                --color=always \
+                --theme=jimburn \
+                --style="numbers,changes" \
+                -- "${FILE_PATH}" && exit 5
             env HIGHLIGHT_OPTIONS="${HIGHLIGHT_OPTIONS}" highlight \
                 --line-numbers \
                 --out-format="${highlight_format}" \
                 --force -- "${FILE_PATH}" && exit 5
-            env COLORTERM=8bit bat --color=always --style="numbers,changes" \
+            env COLORTERM=8bit bat \
+                --color=always \
+                --theme=jimburn \
+                --style="numbers,changes" \
                 -- "${FILE_PATH}" && exit 5
             pygmentize -f "${pygmentize_format}" -O "style=${PYGMENTIZE_STYLE}"\
                 -- "${FILE_PATH}" && exit 5
             exit 2;;
 
         properties | gradle | sql)
-            env COLORTERM=8bit bat --color=always --theme=OneHalfDark \
+            env COLORTERM=8bit bat \
+                --color=always \
+                --theme=jimburn \
                 --style="numbers,changes" \
                 -- "${FILE_PATH}" && exit 5
             if [[ "$( tput colors )" -ge 256 ]]; then
@@ -410,11 +420,19 @@ handle_mime() {
                 local pygmentize_format='terminal'
                 local highlight_format='ansi'
             fi
+            env COLORTERM=8bit bat \
+                --color=always \
+                --theme=jimburn \
+                --style="numbers,changes" \
+                -- "${FILE_PATH}" && exit 5
             env HIGHLIGHT_OPTIONS="${HIGHLIGHT_OPTIONS}" highlight \
                 --line-numbers \
                 --out-format="${highlight_format}" \
                 --force -- "${FILE_PATH}" && exit 5
-            env COLORTERM=8bit bat --color=always --style="numbers,changes" \
+            env COLORTERM=8bit bat \
+                --color=always \
+                --theme=jimburn \
+                --style="numbers,changes" \
                 -- "${FILE_PATH}" && exit 5
             pygmentize -f "${pygmentize_format}" -O "style=${PYGMENTIZE_STYLE}"\
                 -- "${FILE_PATH}" && exit 5
