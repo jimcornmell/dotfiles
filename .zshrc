@@ -5,7 +5,7 @@
 # http://zsh.sourceforge.net/Doc/Release/zsh_toc.html
 # https://github.com/ohmyzsh/ohmyzsh
 
-# Miscellaneos {{{
+# Miscellaneous {{{
 ostype=$(uname -r)
 unsetopt BG_NICE
 
@@ -37,10 +37,10 @@ umask 002
 unset PATH
 export PATH=$PATH:~/bin
 export PATH=$PATH:$HOME/.local/kitty.app/bin
+export PATH=$PATH:$JAVA_HOME/bin
 export PATH=$PATH:/opt/nvim/bin
 export PATH=$PATH:/opt/node/bin
 export PATH=$PATH:/bin
-export PATH=$PATH:$JAVA_HOME/bin
 export PATH=$PATH:/sbin
 export PATH=$PATH:/opt/gradle/bin
 export PATH=$PATH:/opt/groovy/bin
@@ -237,6 +237,17 @@ gtag () {
     git tag -a $1 -m "Release $1"
     git push origin $1
 }
+
+lg() {
+    export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
+    lazygit "$@"
+
+    if [ -f $LAZYGIT_NEW_DIR_FILE ]; then
+            cd "$(cat $LAZYGIT_NEW_DIR_FILE)"
+            rm -f $LAZYGIT_NEW_DIR_FILE > /dev/null
+    fi
+}
+
 # }}}
 
 # Functions {{{
@@ -426,6 +437,7 @@ alias vk="editFile ~/.config/kitty/kitty.conf"
 alias vr="(grip & ; openf http://localhost:6419 &) > /dev/null 2>&1; editFile README.md"
 alias vv="editFile -S ~/.config/nvim/sessions/config_nvim.vim"
 alias vz="editFile ~/.zshrc"
+alias vj="editFile ~/Code/fis-utils/RundeckJobsLinks.md"
 alias watchPorts="sudo watch ss -tulpn"
 alias watch="watch -c"
 alias winx="(/usr/bin/dolphin . > /dev/null 2>&1 &)"
