@@ -10,12 +10,13 @@ ostype=$(uname -r)
 unsetopt BG_NICE
 
 # export EDITOR='neovide'
-export EDITOR='nvim'
+export EDITOR='lvim'
 export MNT=/mnt
 export JAVA_HOME=/opt/java
 export JQ_COLORS="1;33:4;33:0;33:0;33:0;32:1;37:1;37"
 export DISPLAY=:0.0
 export BC_ENV_ARGS=~/.bc
+export KETTLE_HOME=/opt/data-integration
 
 # Nodejs, npm and nvm
 export NVM_DIR="$HOME/.nvm"
@@ -51,6 +52,7 @@ export PATH=$PATH:/snap/bin
 export PATH=$PATH:/opt/docker
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/go/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:.
 # }}}
@@ -256,7 +258,8 @@ editFile() {
     then
         (nohup neovide $* &) > /dev/null 2>&1
     else
-        nvim $*
+        # nvim $*
+        lvim $*
     fi
 }
 
@@ -264,7 +267,7 @@ editFile() {
 bc() {
     local syntax="${1:-python}"
     shift
-    nvim -c \
+    lvim -c \
         "let g:startify_disable_at_vimenter = 1 |\
         set bt=nofile ls=0 noru nonu nolist |\
         hi CodiVirtualText guibg=NONE guifg=LightGreen |\
@@ -423,7 +426,6 @@ alias rm='rmtrash'
 alias soffice="/opt/libreoffice/program/soffice"
 alias s=sudo
 alias sttyreset="stty 502:9:bf:107:0:f:0:0:4:7f:3:15:16:1:1c:12:11:13:1a:1a:0:17"
-alias sudo='sudo '
 alias sup="sudo updatedb"
 alias tocsv="/opt/libreoffice6.2/program/soffice --headless --convert-to csv "
 alias top=$HOME/.local/bin/bpytop
@@ -432,6 +434,7 @@ alias t=tail
 alias u=uniq
 alias v=editFile
 alias vg="editFile .gitignore"
+alias vgg="editFile ~/.gitignore_global"
 alias vi=editFile
 alias vk="editFile ~/.config/kitty/kitty.conf"
 alias vr="(grip & ; openf http://localhost:6419 &) > /dev/null 2>&1; editFile README.md"
