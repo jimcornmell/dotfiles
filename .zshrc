@@ -17,6 +17,7 @@ export JQ_COLORS="1;33:4;33:0;33:0;33:0;32:1;37:1;37"
 export DISPLAY=:0.0
 export BC_ENV_ARGS=~/.bc
 export KETTLE_HOME=/opt/data-integration
+export CODE_HOME=$HOME/Code/
 
 # Nodejs, npm and nvm
 export NVM_DIR="$HOME/.nvm"
@@ -440,7 +441,7 @@ alias vk="editFile ~/.config/kitty/kitty.conf"
 alias vr="(grip & ; openf http://localhost:6419 &) > /dev/null 2>&1; editFile README.md"
 alias vv="editFile -S ~/.config/nvim/sessions/config_nvim.vim"
 alias vz="editFile ~/.zshrc"
-alias vj="editFile ~/Code/fis-utils/RundeckJobsLinks.md"
+alias vj="editFile $CODE_HOME/fis-utils/RundeckJobsLinks.md"
 alias watchPorts="sudo watch ss -tulpn"
 alias watch="watch -c"
 alias winx="(/usr/bin/dolphin . > /dev/null 2>&1 &)"
