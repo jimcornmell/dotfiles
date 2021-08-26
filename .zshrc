@@ -3,14 +3,13 @@
 #  / /\__ \ | | | | | (__
 # /___|___/_| |_|_|  \___|
 # http://zsh.sourceforge.net/Doc/Release/zsh_toc.html
-# https://github.com/ohmyzsh/ohmyzsh
 
 # Miscellaneous {{{
 ostype=$(uname -r)
 unsetopt BG_NICE
 
 # export EDITOR='neovide'
-export EDITOR='nvim'
+export EDITOR='lvim'
 export MNT=/mnt
 export JAVA_HOME=/opt/java
 export JQ_COLORS="1;33:4;33:0;33:0;33:0;32:1;37:1;37"
@@ -36,7 +35,7 @@ umask 002
 # PATH Start with nothing!
 unset PATH
 export PATH=$PATH:~/bin
-export PATH=$PATH:$HOME/.local/kitty.app/bin
+# export PATH=$PATH:$HOME/.local/kitty.app/bin
 export PATH=$PATH:$JAVA_HOME/bin
 export PATH=$PATH:/opt/nvim/bin
 export PATH=$PATH:/opt/node/bin
@@ -256,7 +255,7 @@ editFile() {
     then
         (nohup neovide $* &) > /dev/null 2>&1
     else
-        nvim $*
+        $EDITOR $*
     fi
 }
 
@@ -264,7 +263,7 @@ editFile() {
 bc() {
     local syntax="${1:-python}"
     shift
-    nvim -c \
+    $EDITOR -c \
         "let g:startify_disable_at_vimenter = 1 |\
         set bt=nofile ls=0 noru nonu nolist |\
         hi CodiVirtualText guibg=NONE guifg=LightGreen |\
@@ -375,6 +374,9 @@ ZSH_HIGHLIGHT_STYLES[assig]=fg=cyan,bold
 
 alias "?"="jobs"
 alias "\-"="cd -"
+alias "td"="~/Documents/Docs"
+alias "tc"="~/Code"
+alias "tw"="~/Downloads"
 
 alias a=alias
 alias banner=figlet
@@ -423,7 +425,7 @@ alias rm='rmtrash'
 alias soffice="/opt/libreoffice/program/soffice"
 alias s=sudo
 alias sttyreset="stty 502:9:bf:107:0:f:0:0:4:7f:3:15:16:1:1c:12:11:13:1a:1a:0:17"
-alias sudo='sudo '
+# alias sudo='sudo '
 alias sup="sudo updatedb"
 alias tocsv="/opt/libreoffice6.2/program/soffice --headless --convert-to csv "
 alias top=$HOME/.local/bin/bpytop
@@ -478,12 +480,12 @@ kitty + complete setup zsh | source /dev/stdin
 # Bat {{{
 # https://github.com/sharkdp/bat
 alias highlight=ranger_highlight
-export HIGHLIGHT_STYLE=zenburn
+export HIGHLIGHT_STYLE=jimburn
 alias ccat=ranger_highlight
 alias cat=bat
 alias more=bat
 alias m=bat
-export BAT_THEME=zenburn
+export BAT_THEME=jimburn
 export BAT_PAGER="less"
 export XDG_CACHE_HOME=$HOME/.cache/ranger/
 export XDG_CONFIG_HOME="$HOME/.config"
