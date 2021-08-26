@@ -1,2 +1,3 @@
 set gvimpath=/home/jim/.local/kitty.app/bin/kitty
-set gvimargs=/opt/nvim/bin/nvim +{line} {file}
+set gvimargs=/opt/nvim/bin/nvim -u /home/jim/.local/share/lunarvim/lvim/init.lua --cmd "set runtimepath+=/home/jim/.local/share/lunarvim/lvim" +{line} "{file}"
+

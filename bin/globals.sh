@@ -429,6 +429,7 @@ function boxtextcolumns() {
     numCols="$3"
     oldwidth=$boxwidth
     t=$((numCols+4))
+    outchars $boxmargin " "
     setboxtextfg $colourTitle
     setforeground $boxfg
     setbackground $boxbg
@@ -446,6 +447,7 @@ function boxtextcolumns() {
     resetcolour
     echo
 
+    outchars $boxmargin " "
     setforeground $boxfg
     setbackground $boxbg
     outchar $pV

@@ -4,8 +4,8 @@
 # Converts the GitHub markdown format cheatsheet to plain html.
 # This is opened within my nvim setup by hitting F1.
 
-inputFile=~/.config/LunarVim/cheatsheet.md
-outputFile=~/.config/LunarVim/cheatsheet.html
+inputFile=~/.config/lvim/cheatsheet.md
+outputFile=~/.config/lvim/cheatsheet.html
 
 echo Converting $inputFile to $outputFile
 
@@ -97,7 +97,7 @@ seenfirst=false
 while read -r line
 do
     line=$(echo $line | sed "s/\\\|/¬/g")
-    line=$(echo $line | sed 's/:heavy_check_mark:/<img src="utils\/media\/tick.png"\/>/g')
+    line=$(echo $line | sed 's/:heavy_check_mark:/<img src="media\/tick.png"\/>/g')
 
     if [[ $line != \|* ]]
     then
