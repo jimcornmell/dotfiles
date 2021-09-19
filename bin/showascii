@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-
 # Show an ascii table for quick reference.
-
 . ~/bin/globals.sh
 
 setboxwidth 73
 boxtop
 boxtext "ASCII table"
+setboxtextfg $cyan
+boxtext "https://theasciicode.com.ar"
+setboxtextfg $green
 boxtext ""
 printf $pV
 outnonl $blue "     Decimal    "

@@ -9,6 +9,7 @@ ostype=$(uname -r)
 unsetopt BG_NICE
 
 # export EDITOR='neovide'
+# export EDITOR='goneovim'
 export EDITOR='lvim'
 export MNT=/mnt
 export JAVA_HOME=/opt/java
@@ -39,7 +40,6 @@ unset PATH
 export PATH=$PATH:~/bin
 export PATH=$PATH:$HOME/.local/kitty.app/bin
 export PATH=$PATH:$JAVA_HOME/bin
-export PATH=$PATH:/opt/nvim/bin
 export PATH=$PATH:/opt/node/bin
 export PATH=$PATH:/bin
 export PATH=$PATH:/sbin
@@ -145,7 +145,7 @@ rprompt() {
 
 # Custom traditional prompt.
 custom_traditional_prompt() {
-    echo "$USER@$(hostname):$PWD$"
+    echo "$"
 }
 
 # Change to customize for home/work etc.
@@ -257,6 +257,9 @@ editFile() {
     if [ "$EDITOR" = "neovide" ]
     then
         (nohup neovide $* &) > /dev/null 2>&1
+    elif [ "$EDITOR" = "goneovim" ]
+    then
+        (nohup goneovim --nvim=/usr/local/bin/lvim --maximized --fullscreen $* &) > /dev/null 2>&1
     else
         $EDITOR $*
     fi
@@ -438,11 +441,12 @@ alias v=editFile
 alias vg="editFile .gitignore"
 alias vgg="editFile ~/.gitignore_global"
 alias vi=editFile
-alias vk="editFile ~/.config/kitty/kitty.conf"
-alias vr="(grip & ; openf http://localhost:6419 &) > /dev/null 2>&1; editFile README.md"
-alias vv="editFile -S ~/.config/nvim/sessions/config_nvim.vim"
-alias vz="editFile ~/.zshrc"
 alias vj="editFile $CODE_HOME/fis-utils/RundeckJobsLinks.md"
+alias vk="editFile ~/.config/kitty/kitty.conf"
+# alias vp="editFile -c \":MarkdownPreview\""
+alias vr="editFile -c \":MarkdownPreview\" README.md"
+alias vv="editFile ~/.config/lvim/config.lua"
+alias vz="editFile ~/.zshrc"
 alias watchPorts="sudo watch ss -tulpn"
 alias watch="watch -c"
 alias winx="(/usr/bin/dolphin . > /dev/null 2>&1 &)"
