@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+. ~/bin/globals.sh
+
+showFile() {
+    W=$(tput cols)
+    H=$(tput lines)
+    CACHE="$HOME/.cache/ranger/"
+    scope.sh "$file" $W $H "$CACHE" True True $LESS
+}
+
+if [[ $(basename $0) == "lioness" ]]; then
+    LESS="True"
+else
+    LESS="False"
+fi
+
+case $# in
+    0)
+        outnl $red "No files to cat!"
+        ;;
+
+    1)
+        file=$1
+
+        if [[ -e "$file" ]]; then
+            showFile "$file"
+        else
+            outnl $red "File missing: $file"
+        fi
+        ;;
+
+    *)
+        for file in "$@"
+        do
+            outnl $yellow "$file"
+
+            if [[ -e "$file" ]]; then
+                showFile "$file"
+            else
+                outnl $red "File missing: $file"
+            fi
+        done
+        ;;
+esac
+
+# echo $(tput colors)
+# lineNum=1
+# nvimpager -c "$@" | while read -r line
+# do
+    # lNum=$(printf "%6d" $lineNum)
+    # lineNum=$((lineNum+1))
+
+    # tput -T ansi bold
+    # tput -T ansi setaf 4
+    # echo -n "$lNum "
+    # tput -T ansi sgr0
+
+    # echo -n "$line"
+    # echo
+# done
+

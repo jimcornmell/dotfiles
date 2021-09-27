@@ -2,6 +2,7 @@
 
 # Standard print layouts used by the scripts in this folder.
 
+# Graphics {{{
 # See http://linuxcommand.org/lc3_adv_tput.php
 
 # Colours used in scripts etc.
@@ -561,9 +562,9 @@ function outruler() {
     outchar $pVL
     echo
 }
+# }}}
 
-setboxdefaults
-
+# URL stuff {{{
 urlencode() {
     # urlencode <string>
     old_lc_collate=$LC_COLLATE
@@ -586,3 +587,20 @@ urldecode() {
     local url_encoded="${1//+/ }"
     printf '%b' "${url_encoded//%/\\x}"
 }
+# }}}
+
+# Git stuff {{{
+gitProjectName() {
+    git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p'
+}
+
+gitBranch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+}
+
+gitOwner() {
+    git config --get remote.origin.url | sed -e 's/.*://' -e 's/\/.*//'
+}
+# }}}
+
+setboxdefaults

@@ -40,6 +40,7 @@ unset PATH
 export PATH=$PATH:~/bin
 export PATH=$PATH:$HOME/.local/kitty.app/bin
 export PATH=$PATH:$JAVA_HOME/bin
+export PATH=$PATH:/opt/nvim/usr/bin
 export PATH=$PATH:/opt/node/bin
 export PATH=$PATH:/bin
 export PATH=$PATH:/sbin
@@ -333,18 +334,17 @@ total()
 # Add a `r` function to zsh that opens ranger either at the given directory or
 # at the one autojump suggests
 r() {
-  if [ "$1" != "" ]; then
-    if [ -d "$1" ]; then
-      ranger "$1" --choosedir=$HOME/.rangerdir
-      cd $(cat $HOME/.rangerdir)
+    if [ "$1" != "" ]; then
+        if [ -d "$1" ]; then
+            ranger "$1" --choosedir=$HOME/.rangerdir
+        else
+            ranger "$(autojump $1)" --choosedir=$HOME/.rangerdir
+        fi
     else
-      ranger "$(autojump $1)" --choosedir=$HOME/.rangerdir
-      cd $(cat $HOME/.rangerdir)
+        ranger --choosedir=$HOME/.rangerdir
     fi
-  else
-    ranger --choosedir=$HOME/.rangerdir
-    cd $(cat $HOME/.rangerdir)
-  fi
+
+    cd $(\cat $HOME/.rangerdir)
     return $?
 }
 # }}}
@@ -488,10 +488,10 @@ kitty + complete setup zsh | source /dev/stdin
 # https://github.com/sharkdp/bat
 alias highlight=ranger_highlight
 export HIGHLIGHT_STYLE=jimburn
-alias ccat=ranger_highlight
-alias cat=bat
-alias more=bat
-alias m=bat
+alias cat=~/bin/dotfiles/bin/lion
+alias more=~/bin/dotfiles/bin/lioness
+alias less=~/bin/dotfiles/bin/lioness
+alias m=~/bin/dotfiles/bin/lioness
 export BAT_THEME=jimburn
 export BAT_PAGER="less"
 export XDG_CACHE_HOME=$HOME/.cache/ranger/
