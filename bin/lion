@@ -4,12 +4,12 @@
 showFile() {
     MIME="$(file --dereference --brief --mime-type -- "${FILE}")"
     FULL_NAME="$(realpath "$FILE")"
-
     # Implement rangers cache filename function.
     HASH=$(echo "from hashlib import sha1
 print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /bin/python3 -)
 
-    FULL_CACHE_NAME="${CACHE}${HASH}.jpg"
+    # Rangers image cache = lions image cache.
+    FULL_CACHE_NAME="${CACHE_DIR}${HASH}.jpg"
     outnl $yellow "$FILE : $MIME"
 
     if [[ "$(basename "${PROGRAM_NAME}")" == "lioness" ]]; then
@@ -22,25 +22,15 @@ print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /
 PROGRAM_NAME="$0"
 W=$(tput cols)
 H=$(tput lines)
-CACHE="${HOME}/.cache/ranger/ranger/"
+CACHE_DIR="${XDG_CACHE_HOME}/ranger/"
 
-if [[ ! -d "${CACHE}" ]]; then
-    mkdir -p "${CACHE}"
+if [[ ! -d "${CACHE_DIR}" ]]; then
+    mkdir -p "${CACHE_DIR}"
 fi
 
 case $# in
     0)
         outnl $red "No files to cat!"
-        ;;
-
-    1)
-        FILE=$1
-
-        if [[ -e "$FILE" ]]; then
-            showFile "$FILE"
-        else
-            outnl $red "File missing: $FILE"
-        fi
         ;;
 
     *)

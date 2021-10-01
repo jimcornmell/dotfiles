@@ -494,7 +494,7 @@ alias less=~/bin/dotfiles/bin/lioness
 alias m=~/bin/dotfiles/bin/lioness
 export BAT_THEME=jimburn
 export BAT_PAGER="less"
-export XDG_CACHE_HOME=$HOME/.cache/ranger/
+export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_HOME="$HOME/.config"
 # }}}
 
