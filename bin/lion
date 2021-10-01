@@ -2,23 +2,27 @@
 . ~/bin/globals.sh
 
 showFile() {
-    FULL_NAME="$(realpath "$FILE")"
-    HASH=$(sha256sum $FULL_NAME | awk '{print $1}')
-    FULL_CACHE_NAME="${CACHE}${HASH}.jpg"
     MIME="$(file --dereference --brief --mime-type -- "${FILE}")"
+    FULL_NAME="$(realpath "$FILE")"
+
+    # Implement rangers cache filename function.
+    HASH=$(echo "from hashlib import sha1
+print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /bin/python3 -)
+
+    FULL_CACHE_NAME="${CACHE}${HASH}.jpg"
     outnl $yellow "$FILE : $MIME"
 
-    if [[ $(basename "${PROG}") == "lioness" ]]; then
+    if [[ "$(basename "${PROGRAM_NAME}")" == "lioness" ]]; then
         scope.sh "${FULL_NAME}" $W $H "${FULL_CACHE_NAME}" True True | \bat -p --paging always
     else
         scope.sh "${FULL_NAME}" $W $H "${FULL_CACHE_NAME}" True True
     fi
 }
 
-PROG="$0"
+PROGRAM_NAME="$0"
 W=$(tput cols)
 H=$(tput lines)
-CACHE="${HOME}/.cache/lion/"
+CACHE="${HOME}/.cache/ranger/ranger/"
 
 if [[ ! -d "${CACHE}" ]]; then
     mkdir -p "${CACHE}"
@@ -50,20 +54,4 @@ case $# in
         done
         ;;
 esac
-
-# echo $(tput colors)
-# lineNum=1
-# nvimpager -c "$@" | while read -r line
-# do
-    # lNum=$(printf "%6d" $lineNum)
-    # lineNum=$((lineNum+1))
-
-    # tput -T ansi bold
-    # tput -T ansi setaf 4
-    # echo -n "$lNum "
-    # tput -T ansi sgr0
-
-    # echo -n "$line"
-    # echo
-# done
 
