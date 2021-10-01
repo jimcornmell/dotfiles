@@ -2,16 +2,26 @@
 . ~/bin/globals.sh
 
 showFile() {
-    W=$(tput cols)
-    H=$(tput lines)
-    CACHE="$HOME/.cache/ranger/"
-    scope.sh "$file" $W $H "$CACHE" True True $LESS
+    FULL_NAME="$(realpath "$FILE")"
+    HASH=$(sha256sum $FULL_NAME | awk '{print $1}')
+    FULL_CACHE_NAME="${CACHE}${HASH}.jpg"
+    MIME="$(file --dereference --brief --mime-type -- "${FILE}")"
+    outnl $yellow "$FILE : $MIME"
+
+    if [[ $(basename "${PROG}") == "lioness" ]]; then
+        scope.sh "${FULL_NAME}" $W $H "${FULL_CACHE_NAME}" True True | \bat -p --paging always
+    else
+        scope.sh "${FULL_NAME}" $W $H "${FULL_CACHE_NAME}" True True
+    fi
 }
 
-if [[ $(basename $0) == "lioness" ]]; then
-    LESS="True"
-else
-    LESS="False"
+PROG="$0"
+W=$(tput cols)
+H=$(tput lines)
+CACHE="${HOME}/.cache/lion/"
+
+if [[ ! -d "${CACHE}" ]]; then
+    mkdir -p "${CACHE}"
 fi
 
 case $# in
@@ -20,24 +30,22 @@ case $# in
         ;;
 
     1)
-        file=$1
+        FILE=$1
 
-        if [[ -e "$file" ]]; then
-            showFile "$file"
+        if [[ -e "$FILE" ]]; then
+            showFile "$FILE"
         else
-            outnl $red "File missing: $file"
+            outnl $red "File missing: $FILE"
         fi
         ;;
 
     *)
-        for file in "$@"
+        for FILE in "$@"
         do
-            outnl $yellow "$file"
-
-            if [[ -e "$file" ]]; then
-                showFile "$file"
+            if [[ -e "$FILE" ]]; then
+                showFile "$FILE"
             else
-                outnl $red "File missing: $file"
+                outnl $red "File missing: $FILE"
             fi
         done
         ;;
