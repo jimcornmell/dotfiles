@@ -57,11 +57,15 @@ TABLE_GRID_SYLE=fancy_grid
 
 # Previewers {{{
 
-# Kitty Show {{{2
+# Show Image in Kitty? {{{2
 kittyShowImage() {
-    if [[ "${KITTY}" == 'True' ]]; then
-        kitty +kitten icat "$IMAGE_CACHE_PATH_JPG"
-        exit $STAT_SHOW_IMAGE
+    if [[ -f $IMAGE_CACHE_PATH_JPG ]] && [[ $IMAGE_CACHE_PATH_JPG -nt $FILE_PATH ]]; then
+        if [[ "${KITTY}" == 'True' ]]; then
+            kitty +kitten icat "$IMAGE_CACHE_PATH_JPG"
+            exit $STAT_SHOW_STDOUT
+        fi
+
+        exit $STAT_SHOW_CACHED_IMAGE
     fi
 }
 #}}}2
@@ -123,27 +127,17 @@ previewMedia() {
 
 # Preview Video {{{2
 previewVideo() {
-    if [[ -f $IMAGE_CACHE_PATH_JPG ]] && [[ $IMAGE_CACHE_PATH_JPG -nt $FILE_PATH ]]; then
-        kittyShowImage
-    else
-        ffmpegthumbnailer -i "${FILE_PATH}" -o "${IMAGE_CACHE_PATH_JPG}" -s 0 && kittyShowImage
-    fi
-
-    exit $STAT_SHOW_CACHED_IMAGE
+    kittyShowImage
+    ffmpegthumbnailer -i "${FILE_PATH}" -o "${IMAGE_CACHE_PATH_JPG}" -s 0
+    kittyShowImage
 }
 #}}}2
 
 # Preview Images {{{2
 previewImage() {
-    if [[ -f $IMAGE_CACHE_PATH_JPG ]] && [[ $IMAGE_CACHE_PATH_JPG -nt $FILE_PATH ]]; then
-        kittyShowImage
-    else
-        convert "${FILE_PATH}[0]" -auto-orient -resize $DEFAULT_SIZE +repage "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1 \
-            && kittyShowImage
-    fi
-
-    exit $STAT_SHOW_CACHED_IMAGE
-
+    kittyShowImage
+    convert "${FILE_PATH}[0]" -auto-orient -resize $DEFAULT_SIZE +repage "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1
+    kittyShowImage
     ## If orientation data is present and the image actually
     ## needs rotating ("1" means no rotation)...
     # local orientation="$( identify -format '%[EXIF:Orientation]\n' -- "${FILE_PATH}" > /dev/null 2>&1 )"
@@ -159,26 +153,22 @@ previewImage() {
 
 # Preview Font {{{2
 previewFont() {
-    if [[ -f $IMAGE_CACHE_PATH_JPG ]] && [[ $IMAGE_CACHE_PATH_JPG -nt $FILE_PATH ]]; then
-        kittyShowImage
-    else
-        if fontimage -o "${IMAGE_CACHE_PATH_PNG}" \
-            --pixelsize "60" \
-            --fontname \
-            --pixelsize "40" \
-            --text "  ABCDEFGHIJKLMNOPQRSTUVWXYZ  " \
-            --text "  abcdefghijklmnopqrstuvwxyz  " \
-            --text "  0123456789.:,;(*!?') ff fl fi ffi ffl  " \
-            --text "  The quick brown fox jumps over the lazy dog.  " \
-            "${FILE_PATH}" > /dev/null 2>&1;
-        then
-            convert -- "${IMAGE_CACHE_PATH_PNG}" "${IMAGE_CACHE_PATH_JPG}" >/dev/null 2>&1 \
-                && rm "${IMAGE_CACHE_PATH_PNG}" \
-                && kittyShowImage
-        fi
-    fi
+    kittyShowImage
 
-    exit $STAT_SHOW_CACHED_IMAGE
+    if fontimage -o "${IMAGE_CACHE_PATH_PNG}" \
+        --pixelsize "60" \
+        --fontname \
+        --pixelsize "40" \
+        --text "  ABCDEFGHIJKLMNOPQRSTUVWXYZ  " \
+        --text "  abcdefghijklmnopqrstuvwxyz  " \
+        --text "  0123456789.:,;(*!?') ff fl fi ffi ffl  " \
+        --text "  The quick brown fox jumps over the lazy dog.  " \
+        "${FILE_PATH}" > /dev/null 2>&1;
+    then
+        convert -- "${IMAGE_CACHE_PATH_PNG}" "${IMAGE_CACHE_PATH_JPG}" >/dev/null 2>&1 \
+            && rm "${IMAGE_CACHE_PATH_PNG}"
+        kittyShowImage
+    fi
 }
 #}}}2
 
@@ -190,39 +180,38 @@ previewSpreadsheet() {
 
     case "${file_type}" in
         tsv | csv)
-            csvformat -T "${FILE_PATH}" | tabulate -1 -f ${TABLE_GRID_SYLE}
+            csvformat -T "${FILE_PATH}" | tabulate -1 -f ${TABLE_GRID_SYLE} \
+                && exit $STAT_FIX_BOTH
             ;;
 
         xlsx)
-            xlsx2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_SYLE}
+            xlsx2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_SYLE} \
+                && exit $STAT_FIX_BOTH
             ;;
 
         xls)
-            xls2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_SYLE}
+            xls2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_SYLE} \
+                && exit $STAT_FIX_BOTH
             ;;
     esac
-
-    exit $STAT_FIX_BOTH
 }
 #}}}2
 
 # Preview Office Documents NOT Spreadsheets {{{2
 previewOffice() {
-    if [[ -f $IMAGE_CACHE_PATH_JPG ]] && [[ $IMAGE_CACHE_PATH_JPG -nt $FILE_PATH ]]; then
-        kittyShowImage
-    else
-        /opt/libreoffice/program/soffice --convert-to jpg --outdir "${IMAGE_CACHE_PATH_JPG}xxx.jpg" "${FILE_PATH}" > /dev/null 2>&1 \
-            && convert "${IMAGE_CACHE_PATH_JPG}xxx.jpg/${FILE_NAME_NO_EXTENSION}jpg" -resize "${DEFAULT_SIZE}" +repage "${IMAGE_CACHE_PATH_JPG}" >/dev/null 2>&1 \
-            && rm "${IMAGE_CACHE_PATH_JPG}xxx.jpg/${FILE_NAME_NO_EXTENSION}jpg" \
-            && rmdir "${IMAGE_CACHE_PATH_JPG}xxx.jpg" \
-            && kittyShowImage \
-            && exit $STAT_SHOW_CACHED_IMAGE
+    kittyShowImage
 
-        ## Preview as text conversion
-        odt2txt "${FILE_PATH}" && exit $STAT_FIX_BOTH
-        ## Preview as markdown conversion
-        pandoc -s -t markdown -- "${FILE_PATH}" && exit $STAT_FIX_BOTH
-    fi
+    /opt/libreoffice/program/soffice --convert-to jpg --outdir "${IMAGE_CACHE_PATH_JPG}xxx.jpg" "${FILE_PATH}" > /dev/null 2>&1 \
+        && convert "${IMAGE_CACHE_PATH_JPG}xxx.jpg/${FILE_NAME_NO_EXTENSION}jpg" -resize "${DEFAULT_SIZE}" +repage "${IMAGE_CACHE_PATH_JPG}" >/dev/null 2>&1 \
+        && rm "${IMAGE_CACHE_PATH_JPG}xxx.jpg/${FILE_NAME_NO_EXTENSION}jpg" \
+        && rmdir "${IMAGE_CACHE_PATH_JPG}xxx.jpg"
+
+    kittyShowImage
+
+    ## Preview as text conversion
+    odt2txt "${FILE_PATH}" && exit $STAT_FIX_BOTH
+    ## Preview as markdown conversion
+    pandoc -s -t markdown -- "${FILE_PATH}" && exit $STAT_FIX_BOTH
 }
 #}}}2
 
