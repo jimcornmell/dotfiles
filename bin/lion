@@ -30,7 +30,8 @@ fi
 
 case $# in
     0)
-        outnl $red "No files to cat!"
+        # Read normally into less from stdin.
+        less 3<&0
         ;;
 
     *)
