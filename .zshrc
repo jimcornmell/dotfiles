@@ -56,6 +56,7 @@ export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/go/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/usr/local/mysql/bin
+export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:.
 # }}}
 
@@ -435,7 +436,7 @@ alias s=sudo
 alias sttyreset="stty 502:9:bf:107:0:f:0:0:4:7f:3:15:16:1:1c:12:11:13:1a:1a:0:17"
 alias sup="sudo updatedb"
 alias tocsv="/opt/libreoffice6.2/program/soffice --headless --convert-to csv "
-alias top=$HOME/.local/bin/bpytop
+alias top=bpytop
 alias tree="exa -T -l -h --icons --git -F -L 3"
 alias t=tail
 alias u=uniq
