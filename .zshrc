@@ -55,6 +55,7 @@ export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$HOME/.local/bin
 export PATH=$PATH:$HOME/go/bin
 export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/mysql/bin
 export PATH=$PATH:.
 # }}}
 
@@ -388,6 +389,7 @@ alias a=alias
 alias banner=figlet
 alias clip="xclip -selection c"
 alias cls=clear
+alias cx="chmod +x "
 alias d="dirs -v | head -15"
 alias delcolour="sed 's/\x1b\[[0-9;]*m//g'"
 alias dol="(/usr/bin/dolphin . > /dev/null 2>&1 &)"

@@ -52,7 +52,7 @@ PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-zenburn}
 OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
 OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
 DEFAULT_SIZE="500x500"
-TABLE_GRID_SYLE=fancy_grid
+TABLE_GRID_STYLE=simple
 #}}}
 
 # Previewers {{{
@@ -180,17 +180,17 @@ previewSpreadsheet() {
 
     case "${file_type}" in
         tsv | csv)
-            csvformat -T "${FILE_PATH}" | tabulate -1 -f ${TABLE_GRID_SYLE} \
+            csvformat -T "${FILE_PATH}" | tabulate -1 -f ${TABLE_GRID_STYLE} \
                 && exit $STAT_FIX_BOTH
             ;;
 
         xlsx)
-            xlsx2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_SYLE} \
+            xlsx2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_STYLE} \
                 && exit $STAT_FIX_BOTH
             ;;
 
         xls)
-            xls2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_SYLE} \
+            xls2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_STYLE} \
                 && exit $STAT_FIX_BOTH
             ;;
     esac
