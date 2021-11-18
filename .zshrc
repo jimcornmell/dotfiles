@@ -18,6 +18,8 @@ export DISPLAY=:0.0
 export BC_ENV_ARGS=~/.bc
 export KETTLE_HOME=/opt/data-integration
 export CODE_HOME=$HOME/Code/
+export LUNARVIM_CONFIG_DIR="${LUNARVIM_CONFIG_DIR:-/home/jim/.config/lvim}"
+export LUNARVIM_RUNTIME_DIR="${LUNARVIM_RUNTIME_DIR:-/home/jim/.local/share/lunarvim}"
 
 # Nodejs, npm and nvm
 export NVM_DIR="$HOME/.nvm"
