@@ -320,6 +320,17 @@ handle_mime() {
             previewMedia
             ;;
 
+
+        application/json)
+            env COLORTERM=8bit \
+                jq --color-output . "${FILE_PATH}" | \
+                    bat --color=always \
+                        --theme=jimburn \
+                        --paging never \
+                        --style="numbers,changes" \
+                            && exit $STAT_FIX_BOTH
+            ;;
+
         ## ePub, MOBI, FB2 (using Calibre)
         application/epub+zip|application/x-mobipocket-ebook|application/x-fictionbook+xml)
             ## ePub (using https://github.com/marianosimone/epub-thumbnailer)
