@@ -65,7 +65,6 @@ export PATH=$PATH:.
 # ZSH {{{
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
-export EXA_COLORS="da=0;36"
 
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
@@ -376,6 +375,13 @@ ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=cyan,bold
 ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=cyan,bold
 ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=cyan,bold
 ZSH_HIGHLIGHT_STYLES[assig]=fg=cyan,bold
+# }}}
+
+# Exa Colours {{{
+# https://the.exa.website/docs/colour-themes
+export EXA_COLORS="da=0;36"  # da=timestamp 36=cyan
+export EXA_COLORS="$EXA_COLORS:*.mp3=33" # 33=yellow
+export EXA_COLORS="$EXA_COLORS:*.zip=33;01" # 33=yellow; 01=bold
 # }}}
 
 # Aliases {{{
