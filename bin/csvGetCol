@@ -1,27 +1,57 @@
 #!/usr/bin/env bash
+. ~/bin/libs/globals.sh
 
-# Get a column from a csv, assuming first line is the column names.
-# Use as:   csvGetCol "Column name" filenameofcsv
+if [[ $# -eq 1 ]] && [[ "$1" == "-h" ]]; then
+    echo "Get a column from a csv:
 
-if [ $# == 1 ]
-then
-  fileName=$1
-  echo Column names are:
-  head -1 "$fileName" | sed 's/\t/\n/g' | sed 's/,/\n/g'
-  exit 0
+Use as:
+      csvGetCol \"Column name\" filenameofcsv
+            Extract column \"Column Name\" from filenameofcsv.
+            Assuming first line is the column names!
+
+      csvGetCol N filenameofcsv
+            Extract column number N (1...) from filenameofcsv.
+
+      csvGetCol \"Column name\"
+            Extract column \"Column Name\" from stdin
+
+      csvGetCol filenameofcsv
+            Supply list of column names.
+"
+    exit 0
 fi
 
-if [ $# != 2 ]
-then
-  echo Usage:  $0 ColumnName FileName
-  echo or to find column names:
-  echo Usage:  $0 FileName
-  exit 1
+if [[ $# -eq 1 ]]; then
+    if [[ -e "$1" ]]; then
+        fileName="$1"
+        outnl $yellow "Column names/numbers are:
+        "
+        list=$(head -1 "$fileName" | sed 's/\t/\n/g' | sed 's/,/\n/g')
+        num=1
+
+        for name in $list; do
+            outnonl $yellow "$num: "
+            echo $name
+            num=$((num+1))
+        done
+        exit 0
+    fi
+
+    colNum="$1"
 fi
 
-colName=$1
-fileName=$2
+fileName="${2:-/dev/stdin}"
+re='^[0-9]+$'
+colNum="$1"
 
-colNum=$(head -1 "$fileName" | sed 's/\t/\n/g' | sed 's/,/\n/g' | grep -n "^$colName$" | awk -F ":" '{print $1}')
-cat "$fileName" | sed 's/\t/,/g' | cut -d, -f$colNum | tail -n +2
+if ! [[ $colNum =~ $re ]] ; then
+    colName=$1
+    colNum=$(head -1 "$fileName" | sed 's/\t/\n/g' | sed 's/,/\n/g' | grep -n "^$colName$" | awk -F ":" '{print $1}')
+    outnl $yellow "Extracting column named \"$colName\" from $fileName"
+    cat "$fileName" | sed 's/\t/,/g' | cut -d, -f$colNum | tail -n +2
+else
+    outnl $yellow "Extracting column number $colNum from $fileName"
+    cat "$fileName" | sed 's/\t/,/g' | cut -d, -f$colNum
+fi
+
 

@@ -1,69 +1,46 @@
 #!/usr/bin/env bash
-
+. ~/bin/libs/globals.sh
 # Show HTTP Status codes and a link to the wiki page.
 
-. ~/bin/globals.sh
+showCode() {
+    setforeground $grey
+    outchar $pV
+    setforeground $green
+    outnonl $yellow "$1 "
+    printf -v short "%-13s" "$2"
+    outnonl $cyan "$short"
+    printf -v long "%-98s" "$3"
+    outnonl $green " - $long"
+    setforeground $grey
+    outchar $pV
+    echo
 
-setboxwidth 90
+    outchar $pV
+    setforeground $green
+    printf -v url "%117s" "$4"
+    outnonl $cyan "$url "
+    setforeground $grey
+    outchar $pV
+    echo
+
+    boxtextline " "
+    echo
+}
+
+setboxwidth 120
 setboxfg $grey
 boxtop
 setboxtextfg $yellow
 boxtext "HTML Status Codes"
 setboxtextfg $cyan
 boxtext "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
-# openf "https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"
 boxmid
 
-setforeground $grey
-outchar $pV
-setforeground $green
-outnonl $magenta " 1xx "
-outnonl $cyan "informational"
-outnonl   $green " – the request was received, continuing process                       "
+showCode "1xx" "informational" "the request was received, continuing process"                      https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#1xx_informational_response
+showCode "2xx" "successful"    "request was successfully received, understood, and accepted"       https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#2xx_success
+showCode "3xx" "redirection"   "further action needs to be taken in order to complete the request" https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#3xx_redirection
+showCode "4xx" "client error"  "the request contains bad syntax or cannot be fulfilled"            https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_client_errors
+showCode "5xx" "server error"  "the server failed to fulfil an apparently valid request"           https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#5xx_server_errors
 
-setforeground $grey
-outchar $pV
-echo
-outchar $pV
-setforeground $green
-
-outnonl $magenta " 2xx "
-outnonl $cyan "successful   "
-outnonl   $green " - request was successfully received, understood, and accepted        "
-
-setforeground $grey
-outchar $pV
-echo
-outchar $pV
-setforeground $green
-
-outnonl $magenta " 3xx "
-outnonl $cyan "redirection  "
-outnonl   $green " – further action needs to be taken in order to complete the request  "
-
-setforeground $grey
-outchar $pV
-echo
-outchar $pV
-setforeground $green
-
-outnonl $magenta " 4xx "
-outnonl $cyan "client error "
-outnonl   $green " – the request contains bad syntax or cannot be fulfilled             "
-
-setforeground $grey
-outchar $pV
-echo
-outchar $pV
-setforeground $green
-
-outnonl $magenta " 5xx "
-outnonl $cyan "server error "
-outnonl   $green " – the server failed to fulfil an apparently valid request            "
-
-setforeground $grey
-outchar $pV
-echo
 boxbottom
-setforeground $green
 

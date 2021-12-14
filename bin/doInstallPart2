@@ -4,14 +4,14 @@
 # When they are installed should not try to install
 # a second time but should upgrade if applicable.
 
-if grep -q Microsoft /proc/version; then
-    if [ ! -e ~/bin/System32 ]; then
-        echo Adding link to system32
-        ln -s /mnt/c/Windows/System32 ~/bin/System32
-    else
-        echo Already linked to system32.
-    fi
-fi
+# if grep -q Microsoft /proc/version; then
+    # if [ ! -e ~/bin/System32 ]; then
+        # echo Adding link to system32
+        # ln -s /mnt/c/Windows/System32 ~/bin/System32
+    # else
+        # echo Already linked to system32.
+    # fi
+# fi
 
 if [[ -d ~/.fzf ]]; then
     echo Fzf already installed.
@@ -41,18 +41,18 @@ wget https://github.com/Netflix-Skunkworks/go-jira/releases/download/v1.0.20/jir
 chmod 755 jira
 cd ~
 
-figlet exa
-cd ~/bin
-if [[ -f ~/bin/exa ]]; then
-    rm exa
-    rm exa.zip
-fi
-wget -c https://github.com/ogham/exa/releases/download/v0.8.0/exa-linux-x86_64-0.8.0.zip -O exa.zip
-unzip exa.zip
-mv exa-* exa
-chmod 755 exa
-rm exa.zip
-cd ~
+# figlet exa
+# cd ~/bin
+# if [[ -f ~/bin/exa ]]; then
+    # rm exa
+    # rm exa.zip
+# fi
+# wget -c https://github.com/ogham/exa/releases/download/v0.8.0/exa-linux-x86_64-0.8.0.zip -O exa.zip
+# unzip exa.zip
+# mv exa-* exa
+# chmod 755 exa
+# rm exa.zip
+# cd ~
 
 figlet fancy-diff
 cd ~/bin
@@ -63,26 +63,26 @@ wget https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party
 chmod 755 diff-so-fancy
 cd ~
 
-if [[ -d /opt/flyway ]]; then
-    echo Flyway already installed
-else
-    cd /opt
-    figlet flyway
-    wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.2.4/flyway-commandline-5.2.4-linux-x64.tar.gz | sudo tar xvz
-    sudo ln -s flyway-5.2.4 flyway
-    cd ~
-fi
+# if [[ -d /opt/flyway ]]; then
+    # echo Flyway already installed
+# else
+    # cd /opt
+    # figlet flyway
+    # wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.2.4/flyway-commandline-5.2.4-linux-x64.tar.gz | sudo tar xvz
+    # sudo ln -s flyway-5.2.4 flyway
+    # cd ~
+# fi
 
-jpath=$(which java)
+# jpath=$(which java)
 
-if [[ -e "$jpath" ]]; then
-    echo Java already installed
-else
-    figlet Java Corretto
-    wget https://d3pxv6yz143wms.cloudfront.net/8.212.04.2/java-1.8.0-amazon-corretto-jdk_8.212.04-2_amd64.deb -O java.deb
-    sudo dpkg --install java.deb
-    rm java.deb
-fi
+# if [[ -e "$jpath" ]]; then
+    # echo Java already installed
+# else
+    # figlet Java Corretto
+    # wget https://d3pxv6yz143wms.cloudfront.net/8.212.04.2/java-1.8.0-amazon-corretto-jdk_8.212.04-2_amd64.deb -O java.deb
+    # sudo dpkg --install java.deb
+    # rm java.deb
+# fi
 
 figlet Autojump
 cd ~

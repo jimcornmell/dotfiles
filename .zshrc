@@ -244,7 +244,7 @@ gtag () {
     git push origin $1
 }
 
-lg() {
+lzg() {
     export LAZYGIT_NEW_DIR_FILE=~/.lazygit/newdir
     lazygit "$@"
 
@@ -512,6 +512,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 # Docker {{{
 alias di='docker images'
 alias dc='docker ps --all'
+alias lzd=lazydocker
 
 alias docker_images='docker images'
 alias docker_ps='docker ps'

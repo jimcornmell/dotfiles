@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# shellcheck source=/home/jim/bin/libs/globals.sh
+. ~/bin/libs/globals.sh
+
+# Fonts are available here:
+#     http://www.figlet.org/fontdb.cgi
+#     https://github.com/xero/figlet-fonts
+#
+#     Manually install miniwi and Mini
+
+phrase="  Hello World  "
+
+while read -r fname; do
+    outnl $red "figlet -f $fname \"$phrase\""
+    setforeground $cyan
+    figlet -w 100 -f $fname "$phrase"
+done<<EOF
+banner
+big
+bigmono9
+future
+ivrit
+pagga
+slant
+small
+smblock
+smbraille
+standard
+Mini
+miniwi
+EOF

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# shellcheck source=/home/jim/bin/libs/globals.sh
+. ~/bin/libs/globals.sh
+
+SIZE="400x400"
+
+if (( $# != 2 )); then
+    outnl $red "Usage: thumbnail inputfile outputfile"
+    exit 1
+fi
+
+inFile="$1"
+outFile="$2"
+
+if [[ ! -e "$inFile" ]]; then
+    outnl $red "Input file \"$inFile\" does not exist."
+    exit 2
+fi
+
+/opt/AppImages/magick "$inFile" \
+    -auto-orient \
+    -set option:origsize "%wx%h" \
+    \( -size '%[origsize]' tile:pattern:checkerboard -brightness-contrast 50,10 \) \
+    -resize "${SIZE}>" \
+    +repage \
+    +swap \
+    -compose over \
+    -composite \
+    "$outFile" > /dev/null 2>&1
+

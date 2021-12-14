@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Show an ascii table for quick reference.
-. ~/bin/globals.sh
+. ~/bin/libs/globals.sh
 
 setboxwidth 73
 boxtop

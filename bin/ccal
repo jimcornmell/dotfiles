@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. ~/bin/globals.sh
+. ~/bin/libs/globals.sh
 
 year=$(date +"%Y")
 dwq=$(date +"Day number: %j        Week number: %V        Quarter: %q")

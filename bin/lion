@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-. ~/bin/globals.sh
+. ~/bin/libs/globals.sh
 
 showFile() {
-    MIME="$(file --dereference --brief --mime-type -- "${FILE}")"
+    MIME="$(file --dereference --brief --mime-type -- "${FILE}" 2>&1)"
     FULL_NAME="$(realpath "$FILE")"
     # Implement rangers cache filename function.
     HASH=$(echo "from hashlib import sha1
@@ -10,12 +10,22 @@ print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /
 
     # Rangers image cache = lions image cache.
     FULL_CACHE_NAME="${CACHE_DIR}${HASH}.jpg"
-    outnl $yellow "$FILE : $MIME"
+
+    if $INFO_VERBOSE; then
+        outnonl $green "$FILE : "
+        outnl $yellow "$MIME"
+    fi
 
     if [[ "$(basename "${PROGRAM_NAME}")" == "lioness" ]]; then
-        scope.sh "${FULL_NAME}" $W $H "${FULL_CACHE_NAME}" True True | \bat -p --paging always
+        # scope.sh "${FULL_NAME}" "$W" "$H" "${FULL_CACHE_NAME}" True True True | \bat -p --paging always
+        scope.sh "${FULL_NAME}" "$W" "$H" "${FULL_CACHE_NAME}" True True True | \
+            \bat -p \
+            --color=always \
+            --theme=jimburn \
+            --paging always \
+            --style="changes"
     else
-        scope.sh "${FULL_NAME}" $W $H "${FULL_CACHE_NAME}" True True
+        scope.sh "${FULL_NAME}" "$W" "$H" "${FULL_CACHE_NAME}" True True False
     fi
 }
 

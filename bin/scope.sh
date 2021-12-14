@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-. ~/bin/globals.sh
+# shellcheck source=/home/jim/bin/libs/globals.sh
+. ~/bin/libs/globals.sh
 
 # Setup and Config {{{
 set -o noclobber -o noglob -o nounset -o pipefail
@@ -13,56 +14,97 @@ IFS=$'\n'
 # Script arguments
 FILE_PATH="${1}"             # Full path of the highlighted file
 PV_WIDTH="${2}"              # Width of the preview pane (number of fitting characters)
-PV_HEIGHT="${3}"             # Height of the preview pane (number of fitting characters)
+# PV_HEIGHT="${3}"             # Height of the preview pane (number of fitting characters)
 IMAGE_CACHE_PATH_JPG="${4}"  # Full path that should be used to cache image preview
-PV_IMAGE_ENABLED="${5}"      # 'True' if image previews are enabled, 'False' otherwise.
+PV_IMAGE_ENABLED="${5}"  # 'True' if image previews are enabled, 'False' otherwise.
 
-if [[ $# -ge 6 ]]; then
-    KITTY="${6}"             # 'True' if in kitty terminal.
+if [[ -v RANGER_LEVEL ]]; then
+    NOT_IN_RANGER=false
 else
-    KITTY="False"
+    NOT_IN_RANGER=true
 fi
 
 # Meanings of exit codes:   code | meaning    | action of ranger
-#                           -----+------------+----------------------------------------------------------------------
-STAT_SHOW_STDOUT=0        # 0    | success    | Display STDOUT as preview
+#                           -----+------------+---------------------------------------------------------------------.
+# STAT_SHOW_STDOUT=0        # 0    | success    | Display STDOUT as preview
 STAT_NO_PREVIEW=1         # 1    | no preview | Display no preview at all, default fallback if all else fails.
-STAT_PLAIN_TEXT=2         # 2    | plain text | Display the plain content of the file
-STAT_FIX_WIDTH=3          # 3    | fix width  | Don't reload when width changes
-STAT_FIX_HEIGHT=4         # 4    | fix height | Don't reload when height changes
+# STAT_PLAIN_TEXT=2         # 2    | plain text | Display the plain content of the file
+# STAT_FIX_WIDTH=3          # 3    | fix width  | Don't reload when width changes
+# STAT_FIX_HEIGHT=4         # 4    | fix height | Don't reload when height changes
 STAT_FIX_BOTH=5           # 5    | fix both   | Don't ever reload
 STAT_SHOW_CACHED_IMAGE=6  # 6    | image      | Display the image `$IMAGE_CACHE_PATH_JPG` points to as an image preview
 STAT_SHOW_IMAGE=7         # 7    | image      | Display the file directly as an image
 
 # Useful file bits.
-FILE_NAME="$(basename $FILE_PATH)"
+# FILE_NAME="$(basename $FILE_PATH)"
 FILE_EXTENSION="${FILE_PATH##*.}"
 FILE_NAME_NO_EXTENSION="$(basename $FILE_PATH $FILE_EXTENSION)"
 FILE_EXTENSION_LOWER="${FILE_EXTENSION,,}"
 IMAGE_CACHE_PATH_PNG="$(basename "${IMAGE_CACHE_PATH_JPG}" jpg)png"
 
 # Settings
-JQ_COLORS="1;33:4;33:0;33:0;33:0;32:1;37:1;37"
+# JQ_COLORS="1;33:4;33:0;33:0;33:0;32:1;37:1;37"
 # HIGHLIGHT_SIZE_MAX=262143  # 256KiB
 HIGHLIGHT_SIZE_MAX=26214300
 HIGHLIGHT_TABWIDTH=${HIGHLIGHT_TABWIDTH:-8}
 HIGHLIGHT_STYLE=${HIGHLIGHT_STYLE:-zenburn}
 HIGHLIGHT_OPTIONS="--replace-tabs=${HIGHLIGHT_TABWIDTH} --style=${HIGHLIGHT_STYLE} ${HIGHLIGHT_OPTIONS:-}"
 PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-zenburn}
-OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
-OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
+MAGICK="/opt/AppImages/magick"
+# OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
+# OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
 DEFAULT_SIZE="500x500"
-TABLE_GRID_STYLE=simple
+COLS=$(tput cols)
+COLS=$((COLS - 1))
+# TABLE_GRID_STYLE=fancy_grid
+TABLE_GRID_STYLE=grid
+TAB="\t"
+C=$(printf '\033[90m') # Table Colour 90=grey
+H=$(printf '\033[33;1m') # Heading Colour 33=yellow
+# H=$(printf '\033[38;2;255;82;197;48;2;155;106;0m')
+R=$(printf '\033[0m')  # Reset
+#}}}
+
+# Pretty Table {{{
+prettyTab() {
+    if [[ $TABLE_GRID_STYLE == "fancy_grid" ]]; then
+        # Can't cut as lines are unicode, 2 chars!
+        tabulate -1 -f ${TABLE_GRID_STYLE} -s ${TAB} | grep -v "├.*┼.*┤" | sed -e 's/^\(│[ ]*\)"/\1 /' -e 's/"\([ ]*│\)$/ \1/'
+    else
+        tabulate -1 -f ${TABLE_GRID_STYLE} -s ${TAB} \
+            | grep -v "^+-.*+.*+" \
+            | sed -e 's/^\(|[ ]*\)"/\1 /' -e 's/"\([ ]*|\)$/ \1/' \
+            | cut -c 1-${COLS} \
+            | sed \
+                    -e "1s/| /| ${H}/g" \
+                    -e "s/=+=/=╪=/g" \
+                    -e "s/==/══/g" \
+                    -e "s/=╪/═╪/g" \
+                    -e "s/^+/${C}╞/" \
+                    -e "s/=+\$/═╡${R}/" \
+                    -e "s/═+\$/═╡${R}/" \
+                    -e "s/^| /${C}│${R} /g" \
+                    -e "s/ |\$/ ${C}│${R}/g" \
+                    -e "s/ | / ${C}│${R} /g" \
+                    -e "s/=\$/═${R}/"
+    fi
+}
 #}}}
 
 # Previewers {{{
 
 # Show Image in Kitty? {{{2
-kittyShowImage() {
+tryCachedImage() {
+    # If cached image exists and is newer than file, use it!
     if [[ -f $IMAGE_CACHE_PATH_JPG ]] && [[ $IMAGE_CACHE_PATH_JPG -nt $FILE_PATH ]]; then
-        if [[ "${KITTY}" == 'True' ]]; then
-            kitty +kitten icat "$IMAGE_CACHE_PATH_JPG"
-            exit $STAT_SHOW_STDOUT
+        if $INFO_VERBOSE; then
+            outnonl $green "Information: "
+            info=$(identify -format "t:%m w:%wpx h:%hpx\n" $FILE_PATH)
+            outnl $yellow "$info"
+        fi
+
+        if $NOT_IN_RANGER; then
+            kitty +kitten icat $FILE_PATH
         fi
 
         exit $STAT_SHOW_CACHED_IMAGE
@@ -93,7 +135,7 @@ previewTxtFile() {
         # && exit $STAT_FIX_BOTH
 
     env COLORTERM=8bit \
-        bat -P \
+        \bat -P \
         --color=always \
         --theme=jimburn \
         --style="numbers,changes" \
@@ -122,22 +164,33 @@ previewTxtFile() {
 previewMedia() {
     mediainfo "${FILE_PATH}" && exit $STAT_FIX_BOTH
     exiftool "${FILE_PATH}" && exit $STAT_FIX_BOTH
+    exit $STAT_NO_PREVIEW
 }
 #}}}2
 
 # Preview Video {{{2
 previewVideo() {
-    kittyShowImage
+    tryCachedImage
     ffmpegthumbnailer -i "${FILE_PATH}" -o "${IMAGE_CACHE_PATH_JPG}" -s 0
-    kittyShowImage
+    tryCachedImage
 }
 #}}}2
 
 # Preview Images {{{2
 previewImage() {
-    kittyShowImage
-    convert "${FILE_PATH}[0]" -auto-orient -resize $DEFAULT_SIZE +repage "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1
-    kittyShowImage
+    tryCachedImage
+    $MAGICK "${FILE_PATH}[0]" \
+        -auto-orient \
+        -set option:origsize "%wx%h" \
+        \( -size '%[origsize]' tile:pattern:checkerboard -brightness-contrast 50,10 \) \
+        -resize "${DEFAULT_SIZE}>" \
+        +repage \
+        +swap \
+        -compose over \
+        -composite \
+        "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1
+    tryCachedImage
+
     ## If orientation data is present and the image actually
     ## needs rotating ("1" means no rotation)...
     # local orientation="$( identify -format '%[EXIF:Orientation]\n' -- "${FILE_PATH}" > /dev/null 2>&1 )"
@@ -148,12 +201,13 @@ previewImage() {
     # fi
 
     # convert -- "${FILE_PATH}[0]" "${IMAGE_CACHE_PATH_JPG}" >/dev/null 2>&1 && exit $STAT_SHOW_CACHED_IMAGE
+    exit $STAT_NO_PREVIEW
 }
 #}}}2
 
 # Preview Font {{{2
 previewFont() {
-    kittyShowImage
+    tryCachedImage
 
     if fontimage -o "${IMAGE_CACHE_PATH_PNG}" \
         --pixelsize "60" \
@@ -167,31 +221,56 @@ previewFont() {
     then
         convert -- "${IMAGE_CACHE_PATH_PNG}" "${IMAGE_CACHE_PATH_JPG}" >/dev/null 2>&1 \
             && rm "${IMAGE_CACHE_PATH_PNG}"
-        kittyShowImage
+        tryCachedImage
     fi
+
+    exit $STAT_NO_PREVIEW
 }
 #}}}2
 
 # Preview Spreadsheets, CSV and TSV files {{{2
 # Tab and comma separated files preview.
 # See: https://csvkit.readthedocs.io/en/latest/
+#     sudo pip install csvkit
+#     sudo apt install xlsx2csv
 previewSpreadsheet() {
     local file_type="$1"
 
     case "${file_type}" in
         tsv | csv)
-            csvformat -T "${FILE_PATH}" | tabulate -1 -f ${TABLE_GRID_STYLE} \
-                && exit $STAT_FIX_BOTH
+            csvformat -T "${FILE_PATH}" | prettyTab && exit $STAT_FIX_BOTH
             ;;
 
         xlsx)
-            xlsx2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_STYLE} \
-                && exit $STAT_FIX_BOTH
+            q=$(in2csv -H "${FILE_PATH}" | sed -e '1d' -e '3,$d' -e 's/,.*//')
+            n=1
+
+            in2csv -n "${FILE_PATH}" | while IFS= read -r sheet
+            do
+                outnl $yellow "Sheet $n : $sheet"
+                n=$((n+1))
+
+                if [[ $q == "Query:" ]]; then
+                    # in2csv --sheet "$sheet" -H "${FILE_PATH}" | sed -e '1d' -e '4,$d' -e 's/,*$//' -e 's/:,/:\t/'
+                    # echo
+
+                    if [[ "$sheet" =~ \=0$ ]]; then
+                        outnl $red "No data found"
+                    else
+                        in2csv --sheet "$sheet" -K 4 "${FILE_PATH}" | csvformat -T | prettyTab
+                    fi
+                else
+                    in2csv --sheet "$sheet" "${FILE_PATH}" | csvformat -T | prettyTab
+                fi
+
+                echo
+            done
+
+            exit $STAT_FIX_BOTH
             ;;
 
         xls)
-            xls2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_STYLE} \
-                && exit $STAT_FIX_BOTH
+            xls2csv "${FILE_PATH}" | csvformat -T | prettyTab && exit $STAT_FIX_BOTH
             ;;
     esac
 }
@@ -199,14 +278,14 @@ previewSpreadsheet() {
 
 # Preview Office Documents NOT Spreadsheets {{{2
 previewOffice() {
-    kittyShowImage
+    tryCachedImage
 
     /opt/libreoffice/program/soffice --convert-to jpg --outdir "${IMAGE_CACHE_PATH_JPG}xxx.jpg" "${FILE_PATH}" > /dev/null 2>&1 \
-        && convert "${IMAGE_CACHE_PATH_JPG}xxx.jpg/${FILE_NAME_NO_EXTENSION}jpg" -resize "${DEFAULT_SIZE}" +repage "${IMAGE_CACHE_PATH_JPG}" >/dev/null 2>&1 \
+        && convert "${IMAGE_CACHE_PATH_JPG}xxx.jpg/${FILE_NAME_NO_EXTENSION}jpg" -resize "${DEFAULT_SIZE}>" +repage "${IMAGE_CACHE_PATH_JPG}" >/dev/null 2>&1 \
         && rm "${IMAGE_CACHE_PATH_JPG}xxx.jpg/${FILE_NAME_NO_EXTENSION}jpg" \
         && rmdir "${IMAGE_CACHE_PATH_JPG}xxx.jpg"
 
-    kittyShowImage
+    tryCachedImage
 
     ## Preview as text conversion
     odt2txt "${FILE_PATH}" && exit $STAT_FIX_BOTH
@@ -217,8 +296,7 @@ previewOffice() {
 
 #}}}
 
-# Handlers for each file category {{{
-
+# handle_extension {{{
 handle_extension() {
     case "${FILE_EXTENSION_LOWER}" in
         ## Archive
@@ -249,8 +327,22 @@ handle_extension() {
             ;;
 
         ## Text
-        txt | edi | properties | gradle | sql | java | sh | md)
+        txt | edi | properties | gradle | sql | java | sh)
+            if [[ $FILE_NAME_NO_EXTENSION =~ der2_* ]]; then
+                previewSpreadsheet "tsv"
+                exit 1
+            fi
+
             previewTxtFile
+            ;;
+
+        ## Markdown
+        md)
+            glow -s ~/bin/glowStyle.json "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # glow -s dark "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # nd "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # msee "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # mdcat "${FILE_PATH}" && exit $STAT_FIX_BOTH
             ;;
 
         tsv | csv | xlsx | xls)
@@ -258,21 +350,27 @@ handle_extension() {
             ;;
 
         ## OpenDocument
-        odt|ods|odp|sxw|docx|ppt|pptx|doc|docx|rtf|odg)
+        odt|ods|odp|sxw|docx|ppt|pptx|doc|rtf|odg)
             previewOffice
             ;;
 
         ## Image
-        bmp|eps|ps|gif|tif|tiff|jpg|jpeg|png|fax|pdf|ai)
+        bmp|eps|ps|gif|tif|tiff|jpg|jpeg|pdf|png|fax|ai)
             previewImage
             ;;
 
         ## HTML
         htm|html|xhtml)
-            ## Preview as text conversion
-            w3m -dump "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            lynx -dump -- "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            elinks -dump "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            if $INFO_VERBOSE; then
+                outnl $yellow "Preview HTML as webpage, if blank use real cat as the file could be empty"
+                outhr
+            else
+                echo "Preview HTML as webpage, if blank use real cat as the file could be empty"
+            fi
+
+            w3m -dump "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
+            lynx -dump -- "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
+            elinks -dump "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
             pandoc -s -t markdown -- "${FILE_PATH}" && exit $STAT_FIX_BOTH
             ;;
 
@@ -292,9 +390,11 @@ handle_extension() {
             ;;
     esac
 }
+#}}}
 
+# handle_mime {{{
 handle_mime() {
-    local mimetype="$(file --dereference --brief --mime-type -- "${FILE_PATH}")"
+    local mimetype="$(file --dereference --brief --mime-type -- "${FILE_PATH}" 2>&1)"
 
     case "${mimetype}" in
         ## DjVu
@@ -305,20 +405,21 @@ handle_mime() {
             ## Preview as text conversion (requires djvulibre)
             djvutxt "${FILE_PATH}" | fmt -w "${PV_WIDTH}" && exit $STAT_FIX_BOTH
             previewMedia
-            ;;
+            exit $STAT_NO_PREVIEW;;
+
 
         image/*)
             previewImage
-            ;;
+            exit $STAT_SHOW_IMAGE;;
 
         audio/*)
             previewMedia
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
         video/*)
             previewVideo
             previewMedia
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
 
         application/json)
@@ -329,7 +430,7 @@ handle_mime() {
                         --paging never \
                         --style="numbers,changes" \
                             && exit $STAT_FIX_BOTH
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
         ## ePub, MOBI, FB2 (using Calibre)
         application/epub+zip|application/x-mobipocket-ebook|application/x-fictionbook+xml)
@@ -338,12 +439,12 @@ handle_mime() {
                 "${DEFAULT_SIZE%x*}" && exit $STAT_SHOW_CACHED_IMAGE
             ebook-meta --get-cover="${IMAGE_CACHE_PATH_JPG}" -- "${FILE_PATH}" \
                 >/dev/null && exit $STAT_SHOW_CACHED_IMAGE
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
         ## Font
         application/font*|application/*opentype)
             previewFont
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
         ## RTF and DOC
         text/rtf|*msword)
@@ -351,7 +452,7 @@ handle_mime() {
             ## note: catdoc does not always work for .doc files
             ## catdoc: http://www.wagner.pp.ru/~vitus/software/catdoc/
             catdoc -- "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
         ## DOCX, ePub, FB2 (using markdown)
         ## You might want to remove "|epub" and/or "|fb2" below if you have
@@ -359,17 +460,17 @@ handle_mime() {
         *wordprocessingml.document|*/epub+zip|*/x-fictionbook+xml)
             ## Preview as markdown conversion
             pandoc -s -t markdown -- "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
         ## XLS
         *ms-excel)
             previewSpreadsheet "xls"
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
         ## Text
         text/* | */xml)
             previewTxtFile
-            ;;
+            exit $STAT_NO_PREVIEW;;
 
     ## Preview archives using the first image inside.
     ## (Very useful for comic book collections for example.)
@@ -428,13 +529,31 @@ handle_mime() {
     #         ;;
     esac
 }
+#}}}
 
+# handle_mime {{{
 handle_fallback() {
-    outnl $yellow "
-    Mime type is :
-        $(file --dereference --brief -- "${FILE_PATH}")
-" && exa --colour=always -F --git --group-directories-first --icons -l -h "${FILE_PATH}" \
-        && exit $STAT_FIX_BOTH
+    local mimetype="$(file --dereference --brief --mime-type -- "${FILE_PATH}" 2>&1)"
+    local mime=$(file --dereference --brief -- "${FILE_PATH}" | tr -dc '[[:print:]]')
+
+    echo -n "Mime info:"
+    outnl $yellow "  $mime"
+    echo -n "          "
+    outnl $yellow "  $mimetype"
+    echo
+
+    echo -n "ls -l:      "
+    while read -r line; do
+        echo "$line"
+        echo -n "            "
+    done<<<$(exa --colour=always -F --git --group-directories-first --icons -l -h "${FILE_PATH}")
+    echo
+
+    echo "Contents:"
+    cat "${FILE_PATH}"
+    echo
+
+    exit $STAT_FIX_BOTH
 }
 #}}}
 
