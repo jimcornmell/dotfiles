@@ -2,7 +2,7 @@
 
 # Show HTTP Status codes and a link to the wiki page.
 
-. ~/bin/globals.sh
+. ~/bin/libs/globals.sh
 
 setboxwidth 90
 setboxfg $grey

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. ~/bin/globals.sh
+. ~/bin/libs/globals.sh
 
 # Converts the GitHub markdown format cheatsheet to plain html.
 # This is opened within my nvim setup by hitting F1.

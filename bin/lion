@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. ~/bin/globals.sh
+. ~/bin/libs/globals.sh
 
 showFile() {
     MIME="$(file --dereference --brief --mime-type -- "${FILE}")"

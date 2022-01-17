@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-. ~/bin/globals.sh
+. ~/bin/libs/globals.sh
 
 # Setup and Config {{{
 set -o noclobber -o noglob -o nounset -o pipefail

@@ -3,7 +3,7 @@
 # Display information about a file.
 # e.g: fileinfo FileName
 
-. ~/bin/globals.sh
+. ~/bin/libs/globals.sh
 
 if [ $# != 1 ]
 then
