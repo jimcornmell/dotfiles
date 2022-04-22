@@ -24,7 +24,7 @@ else
 fi
 
 # Meanings of exit codes:   code | meaning    | action of ranger
-#                           -----+------------+----------------------------------------------------------------------
+#                           -----+------------+---------------------------------------------------------------------.
 STAT_SHOW_STDOUT=0        # 0    | success    | Display STDOUT as preview
 STAT_NO_PREVIEW=1         # 1    | no preview | Display no preview at all, default fallback if all else fails.
 STAT_PLAIN_TEXT=2         # 2    | plain text | Display the plain content of the file
@@ -52,7 +52,40 @@ PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-zenburn}
 OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
 OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
 DEFAULT_SIZE="500x500"
-TABLE_GRID_STYLE=simple
+COLS=$(tput cols)
+COLS=$((COLS - 1))
+# TABLE_GRID_STYLE=fancy_grid
+TABLE_GRID_STYLE=grid
+TAB="\t"
+C=$(printf '\033[90m') # Table Colour 90=grey
+H=$(printf '\033[33;1m') # Heading Colour 33=yellow
+# H=$(printf '\033[38;2;255;82;197;48;2;155;106;0m')
+R=$(printf '\033[0m')  # Reset
+#}}}
+
+# Pretty Table {{{
+prettyTab() {
+    if [[ $TABLE_GRID_STYLE == "fancy_grid" ]]; then
+        # Can't cut as lines are unicode, 2 chars!
+        tabulate -1 -f ${TABLE_GRID_STYLE} -s ${TAB} | grep -v "├.*┼.*┤" | sed -e 's/^\(│[ ]*\)"/\1 /' -e 's/"\([ ]*│\)$/ \1/'
+    else
+        tabulate -1 -f ${TABLE_GRID_STYLE} -s ${TAB} \
+            | grep -v "^+-.*+.*+" \
+            | sed -e 's/^\(|[ ]*\)"/\1 /' -e 's/"\([ ]*|\)$/ \1/' \
+            | cut -c 1-${COLS} \
+            | sed \
+                    -e "1s/| /| ${H}/g" \
+                    -e "s/=+=/=╪=/g" \
+                    -e "s/==/══/g" \
+                    -e "s/=╪/═╪/g" \
+                    -e "s/^+/${C}╞/" \
+                    -e "s/=+\$/═╡${R}/" \
+                    -e "s/^| /${C}│${R} /g" \
+                    -e "s/ |\$/ ${C}│${R}/g" \
+                    -e "s/ | / ${C}│${R} /g" \
+                    -e "s/=\$/═${R}/"
+    fi
+}
 #}}}
 
 # Previewers {{{
@@ -175,23 +208,46 @@ previewFont() {
 # Preview Spreadsheets, CSV and TSV files {{{2
 # Tab and comma separated files preview.
 # See: https://csvkit.readthedocs.io/en/latest/
+#     sudo pip install csvkit
+#     sudo apt install xlsx2csv
 previewSpreadsheet() {
     local file_type="$1"
 
     case "${file_type}" in
         tsv | csv)
-            csvformat -T "${FILE_PATH}" | tabulate -1 -f ${TABLE_GRID_STYLE} \
-                && exit $STAT_FIX_BOTH
+            csvformat -T "${FILE_PATH}" | prettyTab && exit $STAT_FIX_BOTH
             ;;
 
         xlsx)
-            xlsx2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_STYLE} \
-                && exit $STAT_FIX_BOTH
+            q=$(in2csv -H "${FILE_PATH}" | sed -e '1d' -e '3,$d' -e 's/,.*//')
+            n=1
+
+            in2csv -n "${FILE_PATH}" | while IFS= read -r sheet
+            do
+                outnl $yellow "Sheet $n : $sheet"
+                n=$((n+1))
+
+                if [[ $q == "Query:" ]]; then
+                    in2csv --sheet "$sheet" -H "${FILE_PATH}" | sed -e '1d' -e '4,$d' -e 's/,*$//' -e 's/:,/:\t/'
+                    echo
+
+                    if [[ "$sheet" =~ \=0$ ]]; then
+                        outnl $red "No data found"
+                    else
+                        in2csv --sheet "$sheet" -K 4 "${FILE_PATH}" | csvformat -T | prettyTab
+                    fi
+                else
+                    in2csv --sheet "$sheet" "${FILE_PATH}" | csvformat -T | prettyTab
+                fi
+
+                echo
+            done
+
+            exit $STAT_FIX_BOTH
             ;;
 
         xls)
-            xls2csv "${FILE_PATH}" | csvformat -T | tabulate -1 -f ${TABLE_GRID_STYLE} \
-                && exit $STAT_FIX_BOTH
+            xls2csv "${FILE_PATH}" | csvformat -T | prettyTab && exit $STAT_FIX_BOTH
             ;;
     esac
 }
