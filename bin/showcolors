@@ -39,7 +39,7 @@ grid256() {
     outnl $magenta '\033[48;5;Cm'
     printf "    "
 
-    for c in `seq 0 255`;
+    for c in {0..255}
     do
         printf "%03d=" $c
         tput setab $c
@@ -62,7 +62,7 @@ greyscaleRamp() {
     outnl $magenta '\033[48;5;Cm'
     echo -n "    "
 
-    for c in `seq 232 255`
+    for c in {232..255}
     do
         printf "%03d=\033[48;5;${c}m    " $c
         resetCol
@@ -97,7 +97,7 @@ systemColours() {
     outnl $magenta '\033[48;5;Cm'
     printf "    "
 
-    for c in `seq 0 15`
+    for c in {0..15}
     do
         printf "%03d=\033[48;5;${c}m    " $c
         resetCol
@@ -117,13 +117,13 @@ colourCube() {
     outnonl $yellow "Colour cube, 6x6x6: "
     outnl $magenta '\033[48;5;Cm'
 
-    for g in `seq 0 5`
+    for g in {0..5}
     do
         printf "    "
 
-        for r in `seq 0 5`
+        for r in {0..5}
         do
-            for b in `seq 0 5`
+            for b in {0..5}
             do
                 c=$((16 + ($r * 36) + ($g * 6) + $b))
                 printf "\033[48;5;${c}m  ";
@@ -144,11 +144,11 @@ hexGrid() {
     printf "    "
     inc=32
 
-    for r in `seq 0 $inc 255`
+    for ((r=0; r<=255; r+=$inc))
     do
-        for g in `seq 0 $inc 255`
+        for ((g=0; g<=255; g+=$inc))
         do
-            for b in `seq 0 $inc 255`
+            for ((b=0; b<=255; b+=$inc))
             do
                 printf "${V}${r};${g};${b}m  "
             done
