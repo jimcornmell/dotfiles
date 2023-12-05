@@ -76,9 +76,21 @@ fonts                          | [fontimage from fontforge](https://fontforge.or
 html                           | [w3m](https://w3m.sourceforge.net/)
 images                         | [icat kitten in kitty](https://sw.kovidgoyal.net/kitty/kittens/icat/)
 json                           | [jq](https://github.com/jqlang/jq)
-md/Markdown                    | [mdcat](https://github.com/swsnr/mdcat)
+md/Markdown                    | See next section on catmd
 
 Note this list is not exhaustive.
+
+# Catmd
+To cat md files to the terminal I played with a few tools but none seemed to do handle tables and images etc.
+Then I realised that the python library [rich](https://github.com/Textualize/rich) can render Markdown,
+and the [icat kitten](https://sw.kovidgoyal.net/kitty/kittens/icat/) in [Kitty](https://sw.kovidgoyal.net/kitty/) can render images.
+So I have mashed the two together into a little python script, [catmd](https://github.com/jimcornmell/dotfiles/blob/main/bin/catmd).
+
+Of course I use my lion/scope mashup (previous section) aliased to cat to control this, so I just cat the file and it sorts out the best tool to render it, i.e. catmd....
+
+Given [markdown example](https://github.com/jimcornmell/dotfiles/blob/main/media/catmd.md) with some text, an image and a table you get:
+
+![catmd example](./media/catmd.png)
 
 # Key bindings (for Kitty)
 

@@ -338,7 +338,8 @@ handle_extension() {
 
         ## Markdown
         md)
-            glow -s ~/bin/glowStyle.json "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            catmd "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # glow -s ~/bin/glowStyle.json "${FILE_PATH}" && exit $STAT_FIX_BOTH
             # glow -s dark "${FILE_PATH}" && exit $STAT_FIX_BOTH
             # nd "${FILE_PATH}" && exit $STAT_FIX_BOTH
             # msee "${FILE_PATH}" && exit $STAT_FIX_BOTH
