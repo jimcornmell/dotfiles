@@ -9,9 +9,11 @@ of code
 - bullet 1
 - bullet 2
 
+- [x] Checkbox
+- [ ] Checkbox
+
 1. num 1
 1. num 2
-1. num 3
 
 |    Month | Assignee | Backup |
 |---------:|:--------:|--------|
@@ -22,10 +24,14 @@ of code
 * [inline link with tooltip](https://www.jetbrains.com "JetBrains: Development Tools for Professionals and Teams")
 * [reference link][1]
 
+___
+[1]: https://www.jetbrains.com
+
 ![Demo Screen](demoScreenThumb.png)
 
 ```plantuml
 @startuml
+!theme sandstone
 start
 :Init Phase;
 :Transfer Phase;
@@ -37,7 +43,6 @@ end note
 stop
 @enduml
 ```
-___
 
 ```plantuml
 digraph g {
@@ -56,7 +61,6 @@ digraph g {
 
 }
 ```
-____
 
 ```plantuml
 digraph g {
@@ -81,5 +85,29 @@ digraph g {
     print_lib_print_common_parent:print_common_maths -> cve_234_1234
 }
 ```
-___
-[1]: https://www.jetbrains.com
+
+## [Sequence Diagram](https://plantuml.com/sequence-diagram)
+
+```plantuml
+@startuml
+!theme spacelab
+class Example {
+  Theme spacelab
+}
+@enduml
+```
+
+```plantuml
+@startuml
+
+!theme sandstone
+actor "Actor One"
+
+"Actor One" -> "System One": Something happens
+"Actor One" <-- "System One": Something else happens
+"Actor One" -> "System One": More stuff
+"Actor One" <-- "System One": And more
+"Actor One" <-- "System Two": And more
+@enduml
+```
+

@@ -8,14 +8,14 @@ import re
 import sys
 import time
 
-IMG_REGX="^!.([^]]*)..([^)]*).$"
+IMG_REGX="^!\\[([^]]*)\\]\\(([^)]*)\\)$"
 IMG_BASE="/tmp/tmp_catmd_"
 IMG_ID=0
-TICK='✅' # ✘ ⛝
-EMPTY='⬛' # ⬜ ⛶
+TICK_ON='✅' # ✘ ⛝
+TICK_OFF='⬛' # ⬜ ⛶
 
 def icatDisplay(image):
-    os.system(f"kitty +kitten icat {image} 2>/dev/null || true")
+    os.system(f"kitty +kitten icat \"{image}\" 2>/dev/null || true")
 
 def displayImage(fileBaseName, isPlantUml):
     global IMG_ID
@@ -23,7 +23,7 @@ def displayImage(fileBaseName, isPlantUml):
     if isPlantUml:
         os.system(f"plantuml -f png -output /tmp {fileBaseName}.txt 2>/dev/null || true")
     else:
-        os.system(f"dot -Tpng -o {fileBaseName}.png {fileBaseName}.txt 2>/dev/null || true")
+        os.system(f"dot -Tpng -o \"{fileBaseName}.png\" \"{fileBaseName}.txt\" 2>/dev/null || true")
 
     icatDisplay(f"{fileBaseName}.png")
     IMG_ID+=1
@@ -31,13 +31,13 @@ def displayImage(fileBaseName, isPlantUml):
 def processFile(markdownFileName):
     section=''
     inUml=False
-    markdownFile=open(markdownFileName,'r')
-    console = Console(color_system="auto")
+    markdownFile=open(markdownFileName, 'r')
+    console = Console(color_system="truecolor")
 
     for line in markdownFile:
         imageMatches = re.search(IMG_REGX, line.strip())
-        line = line.replace('- [x]','- ' + TICK)
-        line = line.replace('- [ ]','- ' + EMPTY)
+        line = line.replace('- [x]','- ' + TICK_ON)
+        line = line.replace('- [ ]','- ' + TICK_OFF)
 
         if imageMatches:
             console.print(Markdown(section))

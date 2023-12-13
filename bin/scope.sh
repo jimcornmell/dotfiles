@@ -299,6 +299,16 @@ previewOffice() {
 # handle_extension {{{
 handle_extension() {
     case "${FILE_EXTENSION_LOWER}" in
+        ## Markdown
+        md)
+            catmd "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # glow -s ~/bin/glowStyle.json "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # glow -s dark "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # nd "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # msee "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            # mdcat "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            ;;
+
         ## Archive
         a|ace|alz|arc|arj|bz|bz2|cab|cpio|deb|gz|jar|lha|lz|lzh|lzma|lzo|\
         rpm|rz|t7z|tar|tbz|tbz2|tgz|tlz|txz|tz|tzo|war|xpi|xz|z|zip)
@@ -334,16 +344,6 @@ handle_extension() {
             fi
 
             previewTxtFile
-            ;;
-
-        ## Markdown
-        md)
-            catmd "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            # glow -s ~/bin/glowStyle.json "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            # glow -s dark "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            # nd "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            # msee "${FILE_PATH}" && exit $STAT_FIX_BOTH
-            # mdcat "${FILE_PATH}" && exit $STAT_FIX_BOTH
             ;;
 
         tsv | csv | xlsx | xls)
@@ -547,7 +547,7 @@ handle_fallback() {
     while read -r line; do
         echo "$line"
         echo -n "            "
-    done<<<$(exa --colour=always -F --git --group-directories-first --icons -l -h "${FILE_PATH}")
+    done<<<$(eza --colour=always -F --git --group-directories-first --icons -l -h "${FILE_PATH}")
     echo
 
     echo "Contents:"
