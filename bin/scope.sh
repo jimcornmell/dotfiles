@@ -338,7 +338,7 @@ handle_extension() {
 
         ## Text
         txt | edi | properties | gradle | sql | java | sh)
-            if [[ $FILE_NAME_NO_EXTENSION =~ der2_* ]]; then
+            if [[ $FILE_NAME_NO_EXTENSION =~ der2_* ]] || [[ $FILE_NAME_NO_EXTENSION =~ sct2_* ]]; then
                 previewSpreadsheet "tsv"
                 exit 1
             fi

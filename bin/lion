@@ -12,8 +12,9 @@ print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /
     FULL_CACHE_NAME="${CACHE_DIR}${HASH}.jpg"
 
     if $INFO_VERBOSE; then
-        outnonl $green "$FILE : "
-        outnl $yellow "$MIME"
+        setboxwidthfull
+        setboxfg $grey
+        outright $grey " " " $FILE : $MIME "
     fi
 
     if [[ "$(basename "${PROGRAM_NAME}")" == "lioness" ]]; then

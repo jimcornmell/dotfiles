@@ -7,12 +7,22 @@ import os
 import re
 import sys
 import time
+from rich.theme import Theme
 
 IMG_REGX="^!\\[([^]]*)\\]\\(([^)]*)\\)$"
 IMG_BASE="/tmp/tmp_catmd_"
 IMG_ID=0
 TICK_ON='✅' # ✘ ⛝
 TICK_OFF='⬛' # ⬜ ⛶
+
+# style (Union[str, Style], optional): Optional style to apply to markdown.
+# inline_code_theme: (Optional[str], optional): Pygments theme for inline code highlighting, or None for no highlighting. Defaults to None.
+
+def displayMd(mdStr):
+    theme=Theme()
+    theme.read("/home/jim/bin/dotfiles/media/rich.theme.md")
+    console = Console(color_system="truecolor", theme=theme)
+    console.print(Markdown(markup=mdStr, code_theme="monokai"))
 
 def icatDisplay(image):
     os.system(f"kitty +kitten icat \"{image}\" 2>/dev/null || true")
@@ -32,7 +42,6 @@ def processFile(markdownFileName):
     section=''
     inUml=False
     markdownFile=open(markdownFileName, 'r')
-    console = Console(color_system="truecolor")
 
     for line in markdownFile:
         imageMatches = re.search(IMG_REGX, line.strip())
@@ -40,11 +49,11 @@ def processFile(markdownFileName):
         line = line.replace('- [ ]','- ' + TICK_OFF)
 
         if imageMatches:
-            console.print(Markdown(section))
+            displayMd(section)
             icatDisplay(imageMatches.group(2))
             section=''
         elif line.strip() == '```plantuml':
-            console.print(Markdown(section))
+            displayMd(section)
             inUml = True
             section=''
         elif line.strip() == '```' and inUml:
@@ -58,7 +67,7 @@ def processFile(markdownFileName):
         else:
             section += line
 
-    console.print(Markdown(section))
+    displayMd(section)
     markdownFile.close()
 
 def cleanup():
