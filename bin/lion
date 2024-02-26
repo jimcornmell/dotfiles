@@ -2,6 +2,7 @@
 . ~/bin/libs/globals.sh
 
 showFile() {
+    FILE=$1
     MIME="$(file --dereference --brief --mime-type -- "${FILE}" 2>&1)"
     FULL_NAME="$(realpath "$FILE")"
     # Implement rangers cache filename function.
@@ -13,8 +14,9 @@ print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /
 
     if $INFO_VERBOSE; then
         setboxwidthfull
-        setboxfg $grey
-        outright $grey " " " $FILE : $MIME "
+        setboxfg $cyan
+        # outright $cyan "$pH" " $FILE : $MIME "
+        outright $cyan "\u2550" " $FILE : $MIME "
     fi
 
     if [[ "$(basename "${PROGRAM_NAME}")" == "lioness" ]]; then
@@ -28,6 +30,8 @@ print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /
     else
         scope.sh "${FULL_NAME}" "$W" "$H" "${FULL_CACHE_NAME}" True True False
     fi
+
+    exit 0
 }
 
 PROGRAM_NAME="$0"
@@ -46,14 +50,45 @@ case $# in
         ;;
 
     *)
-        for FILE in "$@"
-        do
-            if [[ -e "$FILE" ]]; then
-                showFile "$FILE"
-            else
-                outnl $red "File missing: $FILE"
-            fi
-        done
+        if [[ $1 == "-n" ]] && (( $# == 3 )); then
+            ARGS="$2"
+            FILE="$3"
+            f=$(basename "$FILE")
+            f="/tmp/$f"
+            first=true
+            IFS=','
+
+            for x in $ARGS
+            do
+                if [[ $x =~ ^[0-9]+-[0-9]+$ ]]; then
+                    if $first; then
+                        sed -n "${x/-/,}p" "$FILE" > "$f"
+                    else
+                        sed -n "${x/-/,}p" "$FILE" >> "$f"
+                    fi
+                else
+                    if $first; then
+                        sed -n "${x}p" "$FILE" > "$f"
+                    else
+                        sed -n "${x}p" "$FILE" >> "$f"
+                    fi
+                fi
+
+                first=false
+            done
+
+            showFile "$f"
+            rm "$f"
+        else
+            for FILE in "$@"
+            do
+                if [[ -e "$FILE" ]]; then
+                    showFile "$FILE"
+                else
+                    outnl $red "File missing: $FILE"
+                fi
+            done
+        fi
         ;;
 esac
 
