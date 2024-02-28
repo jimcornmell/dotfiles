@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck source=/dev/null
 . ~/bin/libs/globals.sh
 
 showFile() {
@@ -15,12 +16,10 @@ print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /
     if $INFO_VERBOSE; then
         setboxwidthfull
         setboxfg $cyan
-        # outright $cyan "$pH" " $FILE : $MIME "
         outright $cyan "\u2550" " $FILE : $MIME "
     fi
 
     if [[ "$(basename "${PROGRAM_NAME}")" == "lioness" ]]; then
-        # scope.sh "${FULL_NAME}" "$W" "$H" "${FULL_CACHE_NAME}" True True True | \bat -p --paging always
         scope.sh "${FULL_NAME}" "$W" "$H" "${FULL_CACHE_NAME}" True True True | \
             \bat -p \
             --color=always \
@@ -78,7 +77,6 @@ case $# in
             done
 
             showFile "$f"
-            rm "$f"
         else
             for FILE in "$@"
             do

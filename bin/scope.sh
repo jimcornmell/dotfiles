@@ -69,9 +69,13 @@ R=$(printf '\033[0m')  # Reset
 prettyTab() {
     if [[ $TABLE_GRID_STYLE == "fancy_grid" ]]; then
         # Can't cut as lines are unicode, 2 chars!
-        tabulate -1 -f ${TABLE_GRID_STYLE} -s ${TAB} | grep -v "├.*┼.*┤" | sed -e 's/^\(│[ ]*\)"/\1 /' -e 's/"\([ ]*│\)$/ \1/'
+        head -10000 \
+            | tabulate -1 -f ${TABLE_GRID_STYLE} -s ${TAB} 2> /dev/null \
+            | grep -v "├.*┼.*┤" \
+            | sed -e 's/^\(│[ ]*\)"/\1 /' -e 's/"\([ ]*│\)$/ \1/'
     else
-        tabulate -1 -f ${TABLE_GRID_STYLE} -s ${TAB} \
+        head -10000 \
+            | tabulate -1 -f ${TABLE_GRID_STYLE} -s ${TAB} 2> /dev/null \
             | grep -v "^+-.*+.*+" \
             | sed -e 's/^\(|[ ]*\)"/\1 /' -e 's/"\([ ]*|\)$/ \1/' \
             | cut -c 1-${COLS} \
@@ -237,7 +241,10 @@ previewSpreadsheet() {
     local file_type="$1"
 
     case "${file_type}" in
-        tsv | csv)
+        tsv)
+            prettyTab < "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            ;;
+        csv)
             csvformat -T "${FILE_PATH}" | prettyTab && exit $STAT_FIX_BOTH
             ;;
 
