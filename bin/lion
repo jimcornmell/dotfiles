@@ -29,8 +29,6 @@ print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /
     else
         scope.sh "${FULL_NAME}" "$W" "$H" "${FULL_CACHE_NAME}" True True False
     fi
-
-    exit 0
 }
 
 PROGRAM_NAME="$0"
