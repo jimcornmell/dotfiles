@@ -53,6 +53,7 @@ PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-zenburn}
 MAGICK="/opt/AppImages/magick"
 # OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
 # OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
+KITTY="$HOME/.local/kitty.app/bin/kitty"
 DEFAULT_SIZE="500x500"
 COLS=$(tput cols)
 COLS=$((COLS - 2))
@@ -108,7 +109,7 @@ tryCachedImage() {
         fi
 
         if $NOT_IN_RANGER; then
-            kitty +kitten icat $FILE_PATH
+            $KITTY icat $FILE_PATH
         fi
 
         exit $STAT_SHOW_CACHED_IMAGE
