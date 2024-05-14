@@ -54,7 +54,7 @@ MAGICK="/opt/AppImages/magick"
 # OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
 # OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
 KITTY="$HOME/.local/kitty.app/bin/kitty"
-DEFAULT_SIZE="500x500"
+DEFAULT_SIZE="400x400"
 COLS=$(tput cols)
 COLS=$((COLS - 2))
 # TABLE_GRID_STYLE=fancy_grid
@@ -104,12 +104,12 @@ tryCachedImage() {
     if [[ -f $IMAGE_CACHE_PATH_JPG ]] && [[ $IMAGE_CACHE_PATH_JPG -nt $FILE_PATH ]]; then
         if $INFO_VERBOSE; then
             outnonl $green "Information: "
-            info=$(identify -format "t:%m w:%wpx h:%hpx\n" $FILE_PATH)
+            info=$(identify -format "t:%m w:%wpx h:%hpx\n" "$FILE_PATH" | head -1)
             outnl $yellow "$info"
         fi
 
         if $NOT_IN_RANGER; then
-            $KITTY icat $FILE_PATH
+            $KITTY icat "$IMAGE_CACHE_PATH_JPG"
         fi
 
         exit $STAT_SHOW_CACHED_IMAGE
