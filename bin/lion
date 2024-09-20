@@ -8,7 +8,7 @@ showFile() {
     FULL_NAME="$(realpath "$FILE")"
     # Implement rangers cache filename function.
     HASH=$(echo "from hashlib import sha1
-print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /bin/python3 -)
+print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /usr/bin/python3 -)
 
     # Rangers image cache = lions image cache.
     FULL_CACHE_NAME="${CACHE_DIR}${HASH}.jpg"

@@ -24,6 +24,8 @@ else
     NOT_IN_RANGER=true
 fi
 
+ON_MAC=$( [ $(uname -m) == "arm64" ] && echo true || echo false )
+
 # Meanings of exit codes:   code | meaning    | action of ranger
 #                           -----+------------+---------------------------------------------------------------------.
 # STAT_SHOW_STDOUT=0        # 0    | success    | Display STDOUT as preview
@@ -119,8 +121,14 @@ tryCachedImage() {
 
 # Preview Text files with Syntax highlighting and line numbers using vim {{{2
 previewTxtFileInVim() {
-    if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
-        handle_fallback
+    if $ON_MAC; then
+        if [[ "$( stat -f '%z' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
+            handle_fallback
+        fi
+    else
+        if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
+            handle_fallback
+        fi
     fi
 
     # --noplugin \
@@ -143,8 +151,14 @@ previewTxtFileInVim() {
 
 # Preview Text files with Syntax highlighting and line numbers {{{2
 previewTxtFile() {
-    if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
-        handle_fallback
+    if $ON_MAC; then
+        if [[ "$( stat -f '%z' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
+            handle_fallback
+        fi
+    else
+        if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
+            handle_fallback
+        fi
     fi
 
     env COLORTERM=8bit \
