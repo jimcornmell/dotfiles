@@ -117,27 +117,35 @@ tryCachedImage() {
 }
 #}}}2
 
+# Preview Text files with Syntax highlighting and line numbers using vim {{{2
+previewTxtFileInVim() {
+    if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
+        handle_fallback
+    fi
+
+    # --noplugin \
+    # -c 'lua lvim.builtin.which_key.active=false' \
+    # --cmd 'let no_plugin_maps = 1' \
+    nvim \
+        --cmd "set runtimepath+=$HOME/.local/share/lunarvim/lvim" \
+        -c 'runtime! macros/less.vim' \
+        -c 'set norelativenumber' \
+        -c 'set nocursorcolumn' \
+        -c 'set nocursorline' \
+        -c 'set nofoldenable' \
+        -c 'set laststatus=0' \
+        -c 'highlight IncSearch NONE' \
+        -u "$HOME/.local/share/lunarvim/lvim/init.lua" \
+        "${FILE_PATH}" \
+        && exit $STAT_FIX_BOTH
+}
+#}}}2
+
 # Preview Text files with Syntax highlighting and line numbers {{{2
 previewTxtFile() {
     if [[ "$( stat --printf='%s' -- "${FILE_PATH}" )" -gt "${HIGHLIGHT_SIZE_MAX}" ]]; then
         handle_fallback
     fi
-
-    # -c 'lua lvim.builtin.which_key.active=false' \
-    # --cmd 'let no_plugin_maps = 1' \
-    # nvim \
-        # --cmd "set runtimepath+=$HOME/.local/share/lunarvim/lvim" \
-        # -c 'runtime! macros/less.vim' \
-        # -c 'set norelativenumber' \
-        # -c 'set nocursorcolumn' \
-        # -c 'set nocursorline' \
-        # -c 'set nofoldenable' \
-        # -c 'set laststatus=0' \
-        # -c 'highlight IncSearch NONE' \
-        # --noplugin \
-        # -u $HOME/.local/share/lunarvim/lvim/init.lua \
-        # "${FILE_PATH}" \
-        # && exit $STAT_FIX_BOTH
 
     env COLORTERM=8bit \
         \bat -P \
@@ -332,6 +340,10 @@ handle_extension() {
         7z)
             ## Avoid password prompt by providing empty password
             7z l -p -- "${FILE_PATH}" && exit $STAT_FIX_BOTH
+            ;;
+
+        ecl)
+            previewTxtFileInVim
             ;;
 
         ## Font
