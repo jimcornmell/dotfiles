@@ -52,10 +52,15 @@ HIGHLIGHT_TABWIDTH=${HIGHLIGHT_TABWIDTH:-8}
 HIGHLIGHT_STYLE=${HIGHLIGHT_STYLE:-zenburn}
 HIGHLIGHT_OPTIONS="--replace-tabs=${HIGHLIGHT_TABWIDTH} --style=${HIGHLIGHT_STYLE} ${HIGHLIGHT_OPTIONS:-}"
 PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-zenburn}
-MAGICK="/opt/AppImages/magick"
 # OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
 # OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
-KITTY="$HOME/.local/kitty.app/bin/kitty"
+if $ON_MAC; then
+    MAGICK="/opt/homebrew/bin/magick"
+    KITTY=/Applications/kitty.app/Contents/MacOS/kitty
+else
+    MAGICK="/opt/AppImages/magick"
+    KITTY="$HOME/.local/kitty.app/bin/kitty"
+fi
 DEFAULT_SIZE="400x400"
 COLS=$(tput cols)
 COLS=$((COLS - 2))
@@ -111,7 +116,7 @@ tryCachedImage() {
         fi
 
         if $NOT_IN_RANGER; then
-            $KITTY icat "$IMAGE_CACHE_PATH_JPG"
+            $KITTY +kitten icat "$IMAGE_CACHE_PATH_JPG"
         fi
 
         exit $STAT_SHOW_CACHED_IMAGE
