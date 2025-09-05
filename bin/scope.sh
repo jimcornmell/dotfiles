@@ -54,13 +54,17 @@ HIGHLIGHT_OPTIONS="--replace-tabs=${HIGHLIGHT_TABWIDTH} --style=${HIGHLIGHT_STYL
 PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-zenburn}
 # OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
 # OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
+
 if $ON_MAC; then
-    MAGICK="/opt/homebrew/bin/magick"
     KITTY=/Applications/kitty.app/Contents/MacOS/kitty
+    MAGICK="/opt/homebrew/bin/magick"
 else
-    MAGICK="/opt/AppImages/magick"
     KITTY="$HOME/.local/kitty.app/bin/kitty"
+    MAGICK="/opt/AppImages/magick"
+    # MAGICK="/bin/magick"
+    # MAGICK="/home/linuxbrew/.linuxbrew/bin/magick"
 fi
+
 DEFAULT_SIZE="400x400"
 COLS=$(tput cols)
 COLS=$((COLS - 2))
