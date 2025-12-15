@@ -6,12 +6,10 @@ showFile() {
     FILE=$1
     MIME="$(file --dereference --brief --mime-type -- "${FILE}" 2>&1)"
     FULL_NAME="$(realpath "$FILE")"
-    # Implement rangers cache filename function.
-    HASH=$(echo "from hashlib import sha1
-print(sha1('${FULL_NAME}'.encode('utf-8', 'backslashreplace')).hexdigest())" | /usr/bin/python3 -)
 
     # Rangers image cache = lions image cache.
-    FULL_CACHE_NAME="${CACHE_DIR}${HASH}.jpg"
+    HASH=$(rangerHash "$FULL_NAME")
+    FULL_CACHE_NAME="${CACHE_DIR}${HASH}"
 
     if $INFO_VERBOSE; then
         setboxwidthfull

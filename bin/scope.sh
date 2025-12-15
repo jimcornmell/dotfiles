@@ -14,14 +14,14 @@ IFS=$'\n'
 # Script arguments
 FILE_PATH="${1}"             # Full path of the highlighted file
 PV_WIDTH="${2}"              # Width of the preview pane (number of fitting characters)
-# PV_HEIGHT="${3}"             # Height of the preview pane (number of fitting characters)
+# PV_HEIGHT="${3}"           # Height of the preview pane (number of fitting characters)
 IMAGE_CACHE_PATH_JPG="${4}"  # Full path that should be used to cache image preview
-PV_IMAGE_ENABLED="${5}"  # 'True' if image previews are enabled, 'False' otherwise.
+PV_IMAGE_ENABLED="${5}"      # 'True' if image previews are enabled, 'False' otherwise.
 
 if [[ -v RANGER_LEVEL ]]; then
-    NOT_IN_RANGER=false
+    IN_RANGER=true
 else
-    NOT_IN_RANGER=true
+    IN_RANGER=false
 fi
 
 ON_MAC=$( [ $(uname -m) == "arm64" ] && echo true || echo false )
@@ -54,6 +54,7 @@ HIGHLIGHT_OPTIONS="--replace-tabs=${HIGHLIGHT_TABWIDTH} --style=${HIGHLIGHT_STYL
 PYGMENTIZE_STYLE=${PYGMENTIZE_STYLE:-zenburn}
 # OPENSCAD_IMGSIZE=${RNGR_OPENSCAD_IMGSIZE:-1000,1000}
 # OPENSCAD_COLORSCHEME=${RNGR_OPENSCAD_COLORSCHEME:-Tomorrow Night}
+TEMPORARY_IMAGE="${HOME}/bin/dotfiles/media/generating.jpg"
 
 if $ON_MAC; then
     KITTY=/Applications/kitty.app/Contents/MacOS/kitty
@@ -65,7 +66,7 @@ else
     # MAGICK="/home/linuxbrew/.linuxbrew/bin/magick"
 fi
 
-DEFAULT_SIZE="400x400"
+DEFAULT_SIZE="800x800"
 COLS=$(tput cols)
 COLS=$((COLS - 2))
 # TABLE_GRID_STYLE=fancy_grid
@@ -119,7 +120,7 @@ tryCachedImage() {
             outnl $yellow "$info"
         fi
 
-        if $NOT_IN_RANGER; then
+        if ! $IN_RANGER; then
             $KITTY +kitten icat "$IMAGE_CACHE_PATH_JPG"
         fi
 
@@ -207,24 +208,74 @@ previewMedia() {
 # Preview Video {{{2
 previewVideo() {
     tryCachedImage
-    ffmpegthumbnailer -i "${FILE_PATH}" -o "${IMAGE_CACHE_PATH_JPG}" -s 0
-    tryCachedImage
+    # ffmpegthumbnailer -i "${FILE_PATH}" -o "${IMAGE_CACHE_PATH_JPG}" -s 0
+    # tryCachedImage
 }
 #}}}2
 
 # Preview Images {{{2
 previewImage() {
+    local purpose="${1:-None}"
+
     tryCachedImage
-    $MAGICK "${FILE_PATH}[0]" \
-        -auto-orient \
-        -set option:origsize "%wx%h" \
-        \( -size '%[origsize]' tile:pattern:checkerboard -brightness-contrast 50,10 \) \
-        -resize "${DEFAULT_SIZE}>" \
-        +repage \
-        +swap \
-        -compose over \
-        -composite \
-        "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1
+    if $IN_RANGER; then
+        cp "${TEMPORARY_IMAGE}" "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1
+    fi
+
+    if [[ $purpose == "ForAstro" ]]; then
+        echo "Previewing ASTRO magick $FILE_PATH" >> "${HOME}/Logs/scope.log"
+        if $IN_RANGER; then
+            $MAGICK "${FILE_PATH}[0]" \
+                -auto-orient \
+                -set option:origsize "%wx%h" \
+                \( -size '%[origsize]' tile:pattern:checkerboard -brightness-contrast 50,10 \) \
+                -resize "${DEFAULT_SIZE}>" \
+                +repage \
+                +swap \
+                -compose over \
+                -composite \
+                -normalize \
+                "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1 &
+        else
+            $MAGICK "${FILE_PATH}[0]" \
+                -auto-orient \
+                -set option:origsize "%wx%h" \
+                \( -size '%[origsize]' tile:pattern:checkerboard -brightness-contrast 50,10 \) \
+                -resize "${DEFAULT_SIZE}>" \
+                +repage \
+                +swap \
+                -compose over \
+                -composite \
+                -normalize \
+                "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1
+        fi
+    else
+        echo "Previewing magick $FILE_PATH" >> "${HOME}/Logs/scope.log"
+        if $IN_RANGER; then
+            $MAGICK "${FILE_PATH}[0]" \
+                -auto-orient \
+                -set option:origsize "%wx%h" \
+                \( -size '%[origsize]' tile:pattern:checkerboard -brightness-contrast 50,10 \) \
+                -resize "${DEFAULT_SIZE}>" \
+                +repage \
+                +swap \
+                -compose over \
+                -composite \
+                "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1 &
+        else
+            $MAGICK "${FILE_PATH}[0]" \
+                -auto-orient \
+                -set option:origsize "%wx%h" \
+                \( -size '%[origsize]' tile:pattern:checkerboard -brightness-contrast 50,10 \) \
+                -resize "${DEFAULT_SIZE}>" \
+                +repage \
+                +swap \
+                -compose over \
+                -composite \
+                "${IMAGE_CACHE_PATH_JPG}" > /dev/null 2>&1
+        fi
+    fi
+
     tryCachedImage
 
     ## If orientation data is present and the image actually
@@ -337,7 +388,17 @@ previewOffice() {
 
 # handle_extension {{{
 handle_extension() {
+    echo "${FILE_EXTENSION_LOWER}" >> "${HOME}/Logs/scope.log"
     case "${FILE_EXTENSION_LOWER}" in
+        ## Astro fits images.
+        fit | fits)
+            # echo "Previewing FITS files"
+            echo "Previewing FITS files $FILE_PATH" >> "${HOME}/Logs/scope.log"
+            # identify -format "%m %wpx X %hpx\n" "$FILE_PATH" | head -1
+            # identify -format "%m %wpx X %hpx\n" "$FILE_PATH" | head -1 >> "${HOME}/Logs/scope.log"
+            previewImage ForAstro
+            ;;
+
         ## Markdown
         md)
             catmd "${FILE_PATH}" && exit $STAT_FIX_BOTH
@@ -432,6 +493,7 @@ handle_extension() {
         dff|dsf|wv|wvc)
             previewMedia
             ;;
+
     esac
 }
 #}}}
