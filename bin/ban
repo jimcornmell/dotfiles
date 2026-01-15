@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 
 #Start comment
-# s="$1"
-s="#"
+s="$1"
+# s="#"
 #End comment
-# e="$2"
-e="#"
+e="$2"
+# e="#"
 #Text
 t="$3"
 
-# figlet -w 118 -c "$t" | sed -e "s/^/$s/" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/$e/"
 figlet -w 118 -c "$t" | sed -e "s/^/$s/" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/$e/"
-
