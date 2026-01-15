@@ -1,12 +1,27 @@
 #!/usr/bin/env bash
 
-#Start comment
-s="$1"
-# s="#"
-#End comment
-e="$2"
-# e="#"
-#Text
-t="$3"
+main() {
+    t=''
+    s="Foobar"
 
-figlet -w 118 -c "$t" | sed -e "s/^/$s/" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/$e/"
+    while getopts t:s: arg
+    do
+        case $arg in
+            t) t=$OPTARG ;;
+            s) s=$OPTARG ;;
+            *) print_usage "Help";;
+        esac
+    done
+
+    case "$t" in
+        c*|kotlin) figlet -w 118 -c "$s" | sed -e "s/^/\/\/ /" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/\/\//" ;;
+        sh) figlet -w 118 -c "$s" | sed -e "s/^/#/" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/#/" ;;
+        lua) figlet -w 118 -c "$s" | sed -e "s/^/-- /" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/--/" ;;
+        *)
+            echo "$s"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
