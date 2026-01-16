@@ -16,7 +16,7 @@ main() {
     case "$t" in
         c*|kotlin) figlet -w 118 -c "$s" | sed -e "s/^/\/\/ /" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/\/\//" ;;
         sh) figlet -w 118 -c "$s" | sed -e "s/^/#/" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/#/" ;;
-        lua) figlet -w 118 -c "$s" | sed -e "s/^/-- /" | awk '{printf("%-119s\n", $0);}' | sed -e "s/$/--/" ;;
+        lua) figlet -w 118 -c "$s" | sed -e "s/^/-- /" | awk '{printf("%-118s\n", $0);}' | sed -e "s/$/--/" ;;
         *)
             echo "$s"
             exit 1
