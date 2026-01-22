@@ -141,11 +141,7 @@ previewTxtFileInVim() {
         fi
     fi
 
-    # --noplugin \
-    # -c 'lua lvim.builtin.which_key.active=false' \
-    # --cmd 'let no_plugin_maps = 1' \
     nvim \
-        --cmd "set runtimepath+=$HOME/.local/share/lunarvim/lvim" \
         -c 'runtime! macros/less.vim' \
         -c 'set norelativenumber' \
         -c 'set nocursorcolumn' \
@@ -153,7 +149,6 @@ previewTxtFileInVim() {
         -c 'set nofoldenable' \
         -c 'set laststatus=0' \
         -c 'highlight IncSearch NONE' \
-        -u "$HOME/.local/share/lunarvim/lvim/init.lua" \
         "${FILE_PATH}" \
         && exit $STAT_FIX_BOTH
 }
