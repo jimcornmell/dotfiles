@@ -468,9 +468,9 @@ handle_extension() {
                 echo "Preview HTML as webpage, if blank use real cat as the file could be empty"
             fi
 
-            w3m -dump "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
-            lynx -dump -- "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
-            elinks -dump "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
+            # w3m -dump "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
+            # lynx -dump -- "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
+            # elinks -dump "${FILE_PATH}" && outhr && exit $STAT_FIX_BOTH
             pandoc -s -t markdown -- "${FILE_PATH}" && exit $STAT_FIX_BOTH
             ;;
 
