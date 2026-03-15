@@ -79,10 +79,24 @@ This basically means if I cat a file it will run the scope script which will dec
 | json                | [jq](https://github.com/jqlang/jq)                                              |
 | md/Markdown         | See next section on catmd                                                       |
 
+## Cat spreadsheets
+
 ![Spreadsheet](media/cat_spreadsheet.png)
+
+## Cat fonts
+
 ![Font](media/cat_font.png)
+
+## Cat images
+
 ![Image](media/cat_img.png)
+
+## Cat JSON
+
 ![Json](media/cat_json.png)
+
+## Cat kolin
+
 ![Kotlin](media/cat_kotlin.png)
 
 Note this list is not exhaustive.
