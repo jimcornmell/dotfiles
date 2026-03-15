@@ -12,7 +12,7 @@
 Here is my Linux command line setup.  I have various tools which are setup and
 ready to use.  Feel fee to plagiarize my configuration (I have!).
 
-![LunarVim](./media/demoScreen.png)
+![LazyVim](./media/demoScreen.png)
 
 # Zsh, oh-my-zsh and Powerlevel 10k
 I use zsh and most of my configuration is in [`.zshrc`](https://github.com/jimcornmell/dotfiles/blob/main/.zshrc).
@@ -21,8 +21,9 @@ Like many others I tailor the look and feel of zsh
 using [Oh My Zsh](https://ohmyz.sh), also using
 [Powerlevel10k](https://github.com/romkatv/powerlevel10k).
 
-# Editor Neovim/LunarVim
-I mostly use the brilliant [LunarVim](https://github.com/ChristianChiarulli/LunarVim).
+# Editor Neovim/LazyVim
+I mostly use the brilliant [LazyVim](https://www.lazyvim.org).  See my LazyVim configuration
+[here](https://github.com/jimcornmell/nvim)
 
 # Theming - Zenburn
 I've used [Zenburn](https://github.com/jnurmine/Zenburn) for years now. One of
@@ -50,7 +51,7 @@ Name                                                      | Description
 [jq](https://github.com/jqlang/jq)                        | Viewing JSON files, although see lion below.
 [Jump](https://github.com/wting/autojump)                 | Jump to directories
 [Kitty](https://sw.kovidgoyal.net/kitty/)                 | Command terminal, very powerful and configurable.
-[Lunarvim](https://github.com/LunarVim/LunarVim)          | config and setup for Neovim.
+[LazyVim](https://github.com/jimcornmell/nvim)          | config and setup for Neovim.
 [ncdu](https://dev.yorhel.nl/ncdu)                        | Disc usage, but nice!
 [Neovim](https://github.com/neovim/neovim)                | Editor.
 [Oh My Zsh](https://github.com/ohmyzsh/ohmyzsh)           | Community-driven framework for managing your zsh configuration.
