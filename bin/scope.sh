@@ -42,7 +42,7 @@ STAT_SHOW_IMAGE=7         # 7    | image      | Display the file directly as an 
 FILE_EXTENSION="${FILE_PATH##*.}"
 FILE_NAME_NO_EXTENSION="$(basename $FILE_PATH $FILE_EXTENSION)"
 FILE_EXTENSION_LOWER="${FILE_EXTENSION,,}"
-IMAGE_CACHE_PATH_PNG="$(basename "${IMAGE_CACHE_PATH_JPG}" jpg)png"
+IMAGE_CACHE_PATH_PNG="${IMAGE_CACHE_PATH_JPG%/*}/$(basename "${IMAGE_CACHE_PATH_JPG}" jpg)png"
 
 # Settings
 # JQ_COLORS="1;33:4;33:0;33:0;33:0;32:1;37:1;37"
@@ -664,7 +664,9 @@ if [[ -d "$FILE_PATH" ]]; then
 fi
 
 handle_extension
+echo b
 handle_mime
+echo c
 handle_fallback
 #}}}
 
