@@ -95,7 +95,7 @@ This basically means if I cat a file it will run the scope script which will dec
 
 ![Json](media/cat_json.png)
 
-## Cat kolin
+## Cat kotlin
 
 ![Kotlin](media/cat_kotlin.png)
 
