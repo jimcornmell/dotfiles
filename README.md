@@ -38,7 +38,7 @@ I usually alias these to replace the traditional tools, so for example `eza` bec
 |--------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
 | [ag](https://geoff.greer.fm/ag/)                       | Find replacement.                                                                                             |
 | [Bat](https://github.com/sharkdp/bat)                  | Cat with wings!                                                                                               |
-| [bpyttop](https://github.com/aristocratos/bpytop)      | top/htop replacement. System monitor.                                                                         |
+| [btop](https://github.com/aristocratos/btop)      | top/htop replacement. System monitor.                                                                         |
 | [cht](https://github.com/chubin/cheat.sh)              | Man page replacement.                                                                                         |
 | [delta](https://github.com/dandavison/delta)           | Diff replacement, integrates well with git.                                                                   |
 | [duf](https://github.com/muesli/duf)                   | df replacement.                                                                                               |
