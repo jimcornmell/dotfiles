@@ -664,9 +664,7 @@ if [[ -d "$FILE_PATH" ]]; then
 fi
 
 handle_extension
-echo b
 handle_mime
-echo c
 handle_fallback
 #}}}
 
